@@ -149,6 +149,8 @@ h3.group{font-size:15px; text-transform:uppercase; letter-spacing:.08em; color:v
 .meter{height:16px; background:var(--line); border-radius:99px; overflow:hidden}
 .meter i{display:block; height:100%; width:0; background:var(--good); transition:width .08s}
 .log{font:12px/1.45 ui-monospace,Menlo,monospace; background:var(--soft); border-radius:12px; padding:10px; max-height:300px; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; margin:0}
+.foot{display:flex; flex-direction:column; align-items:center; gap:4px; margin-top:12px}
+.foot small{color:var(--muted); font-size:12px}
 .linkbtn{background:none; border:none; color:var(--muted); font-weight:800; font-size:15px; text-decoration:underline; padding:4px 0; align-self:center}
 .heard{font-family:var(--body); font-size:16px; font-weight:700; color:var(--muted)}
 .heard.ok{color:var(--good)} .heard.no{color:var(--bad)}
@@ -610,11 +612,25 @@ function doneView(){
     </div>
   </div>`;
 }
+const APP_VERSION="2026-10-25 10:35";
+/* Hämtar senaste sidan förbi alla cachar, lägger den i offlinecachen och laddar om.
+   Utan nät laddas bara om, så att offlineversionen finns kvar. */
+async function updateApp(btn){
+  btn.textContent="🔄 Uppdaterar…";
+  try{
+    if(!navigator.onLine) throw 0;
+    const res=await fetch("./index.html?u="+Date.now(),{cache:"reload"});
+    if(!res.ok) throw 0;
+    if(window.caches){const keys=await caches.keys(); for(const k of keys.filter(k=>k.startsWith("sprakresa-"))){const c=await caches.open(k); await c.put("./index.html",res.clone())}}
+    const reg=await navigator.serviceWorker?.getRegistration(); await reg?.update().catch(()=>{});
+  }catch(e){}
+  location.reload();
+}
 function render(anim){
   document.body.dataset.lang=S.lang;
   if(!S.p && S.view!=="mictest") S.view="who";
   const v={mictest:mictestView,who:whoView,home,cat:catView,learn:()=>learn(anim),quiz:quizView,done:doneView}[S.view];
-  $("#app").innerHTML=v();
+  $("#app").innerHTML=v()+`<div class="foot"><button class="linkbtn" data-a="reload">🔄 Uppdatera appen</button><small>Version ${APP_VERSION}</small></div>`;
   scrollTo(0,0);
 }
 
@@ -786,6 +802,7 @@ document.addEventListener("click",e=>{
     else{stopAuto(); S.paused=true; setTurn("Pausad"); b.innerHTML="▶️<small>Fortsätt</small>"}
   }
   else if(a==="mic"){listen(b)}
+  else if(a==="reload"){updateApp(b)}
   else if(a==="mictest"){S.back=S.view; S.view="mictest"; render()}
   else if(a==="mtlang"){S.mtLang=v; document.querySelectorAll("[data-a=mtlang]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.v===v))}
   else if(a==="mtrec"){mtRec(b)}
