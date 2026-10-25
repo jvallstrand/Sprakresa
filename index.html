@@ -612,7 +612,7 @@ function doneView(){
     </div>
   </div>`;
 }
-const APP_VERSION="2026-10-25 10:58";
+const APP_VERSION="2026-10-25 11:02";
 function resetAll(){
   if(!confirm("Börja om från början?\n\nAlla stjärnor, valt språk och vald person raderas för alla på den här enheten.")) return;
   try{Object.keys(localStorage).filter(k=>k.startsWith("sprakresa:")).forEach(k=>localStorage.removeItem(k))}catch(e){}
@@ -675,6 +675,7 @@ function micMatch(heard,target){const h=norm(heard), t=norm(target); if(!t) retu
   return false}
 function heard(html,cls){const h=$("#heard"); if(h){h.className="heard "+(cls||""); h.innerHTML=html}}
 const MICLOG=[]; let micT0=0;
+const STANDALONE=!!(navigator.standalone||matchMedia("(display-mode: standalone)").matches);
 function mlog(m){const line=((performance.now()-micT0)/1000).toFixed(2)+"s  "+m; MICLOG.push(line); if(MICLOG.length>200) MICLOG.shift();
   const el=$("#mlog"); if(el){el.textContent=MICLOG.join("\n"); el.scrollTop=el.scrollHeight}}
 /* Startar taligenkänning. Safari på iOS levererar ofta bara delresultat och avslutar inte alltid själv,
@@ -686,11 +687,11 @@ function startRec(lang, onText, onDone, cont){
   if(cont===undefined) cont=(store.get("micmode","single")==="cont");
   r.lang=lang; r.interimResults=true; r.continuous=!!cont; r.maxAlternatives=5;
   mlog("start lang="+lang+" continuous="+r.continuous+" hemskärm="+!!(navigator.standalone||matchMedia("(display-mode: standalone)").matches)+" nät="+navigator.onLine);
-  let ended=false, quiet=null, stopped=false;
-  const finish=(why)=>{if(ended) return; ended=true; clearTimeout(quiet); clearTimeout(hard); clearTimeout(soft); mlog("klar: "+why); if(rec===r) rec=null; onDone(why)};
+  let ended=false, quiet=null, stopped=false, sound=false;
+  const finish=(why)=>{if(ended) return; ended=true; clearTimeout(quiet); clearTimeout(hard); clearTimeout(soft); mlog("klar: "+why); if(rec===r) rec=null; onDone(why,sound)};
   const stop=(why)=>{if(stopped) return; stopped=true; mlog("stop() – "+why); try{r.stop()}catch(e){} setTimeout(()=>finish(why),1500)};
-  ["start","audiostart","soundstart","speechstart","speechend","soundend","audioend","nomatch"].forEach(ev=>r.addEventListener(ev,()=>mlog("event: "+ev)));
-  r.onresult=e=>{
+  ["start","audiostart","soundstart","speechstart","speechend","soundend","audioend","nomatch"].forEach(ev=>r.addEventListener(ev,()=>{mlog("event: "+ev); if(ev==="soundstart"||ev==="speechstart") sound=true}));
+  r.onresult=e=>{sound=true;
     const alts=[]; let fin=false;
     for(let i=e.resultIndex;i<e.results.length;i++){const res=e.results[i]; fin=fin||res.isFinal; for(let j=0;j<res.length;j++) alts.push(res[j].transcript)}
     // hela texten hittills också, ifall ordet delats upp
@@ -717,11 +718,12 @@ function listen(btn){
       if(P().kid) S.bubble=LANG[S.lang].praise[Math.random()*5|0];
       cheer(); const t=setTimeout(()=>{if(my===run) advance()},1100); timers.push(t); return true}
     return false
-  }, (why)=>{
+  }, (why,sound)=>{
     if(my!==run||ok) return;
     btn.classList.remove("on"); btn.textContent="🎤 Tryck och säg det igen";
     const e=why.startsWith("fel:")?why.slice(4):"";
-    if(e) heard({"not-allowed":"Mikrofonen är inte tillåten. Tillåt mikrofon för Safari och slå på Siri och diktering.",
+    if(!sound && !last && STANDALONE) heard("Mikrofonen får inget ljud när appen körs från hemskärmen – det är en begränsning i iOS. Öppna <b>jvallstrand.github.io/sprakresa</b> i Safari för att öva med mikrofon, eller använd knapparna nedanför.","no");
+    else if(e) heard({"not-allowed":"Mikrofonen är inte tillåten. Tillåt mikrofon för Safari och slå på Siri och diktering.",
       "service-not-allowed":"Taligenkänning är avstängd. Slå på Siri och diktering i Inställningar.",
       "network":"Taligenkänningen behöver nät – använd knapparna nedanför.",
       "no-speech":"Jag hörde inget – tryck och säg det igen!",
