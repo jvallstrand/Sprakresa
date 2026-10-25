@@ -612,7 +612,7 @@ function doneView(){
     </div>
   </div>`;
 }
-const APP_VERSION="2026-10-25 11:02";
+const APP_VERSION="2026-10-25 11:05";
 function resetAll(){
   if(!confirm("Börja om från början?\n\nAlla stjärnor, valt språk och vald person raderas för alla på den här enheten.")) return;
   try{Object.keys(localStorage).filter(k=>k.startsWith("sprakresa:")).forEach(k=>localStorage.removeItem(k))}catch(e){}
@@ -684,7 +684,7 @@ function startRec(lang, onText, onDone, cont){
   stopRec(); try{speechSynthesis.cancel()}catch(e){}
   micT0=performance.now(); MICLOG.length=0;
   const r=new REC(); rec=r;
-  if(cont===undefined) cont=(store.get("micmode","single")==="cont");
+  if(cont===undefined) cont=(store.get("micmode","cont")==="cont");
   r.lang=lang; r.interimResults=true; r.continuous=!!cont; r.maxAlternatives=5;
   mlog("start lang="+lang+" continuous="+r.continuous+" hemskärm="+!!(navigator.standalone||matchMedia("(display-mode: standalone)").matches)+" nät="+navigator.onLine);
   let ended=false, quiet=null, stopped=false, sound=false;
@@ -722,7 +722,7 @@ function listen(btn){
     if(my!==run||ok) return;
     btn.classList.remove("on"); btn.textContent="🎤 Tryck och säg det igen";
     const e=why.startsWith("fel:")?why.slice(4):"";
-    if(!sound && !last && STANDALONE) heard("Mikrofonen får inget ljud när appen körs från hemskärmen – det är en begränsning i iOS. Öppna <b>jvallstrand.github.io/sprakresa</b> i Safari för att öva med mikrofon, eller använd knapparna nedanför.","no");
+    if(!sound && !last && STANDALONE) heard("Mikrofonen fick inget ljud. Tryck och försök igen – hjälper det inte, öppna Mictest längst ner.","no");
     else if(e) heard({"not-allowed":"Mikrofonen är inte tillåten. Tillåt mikrofon för Safari och slå på Siri och diktering.",
       "service-not-allowed":"Taligenkänning är avstängd. Slå på Siri och diktering i Inställningar.",
       "network":"Taligenkänningen behöver nät – använd knapparna nedanför.",
@@ -753,7 +753,7 @@ function mictestView(){
     <div class="meter"><i id="mtbar"></i></div><div class="kv" id="mtmeterinfo"></div></div>
   <div class="mt"><h3>2. Förstår taligenkänningen?</h3>
     <div class="btns">${["fr-FR","es-ES","sv-SE"].map(l=>`<button data-a="mtlang" data-v="${l}" aria-pressed="${l===L}">${l}</button>`).join("")}</div>
-    <div class="btns">${[["single","Läge A: enkel"],["cont","Läge B: kontinuerlig"]].map(([k,t])=>`<button data-a="mtmode" data-v="${k}" aria-pressed="${store.get("micmode","single")===k}">${t}</button>`).join("")}</div>
+    <div class="btns">${[["single","Läge A: enkel"],["cont","Läge B: kontinuerlig"]].map(([k,t])=>`<button data-a="mtmode" data-v="${k}" aria-pressed="${store.get("micmode","cont")===k}">${t}</button>`).join("")}</div>
     <div class="btns"><button data-a="mtrec">Lyssna (säg något)</button><button data-a="mtcopy">Kopiera logg</button></div>
     <div class="kv" id="mtheard"></div>
     <pre class="log" id="mlog">${esc(MICLOG.join("\n"))||"Loggen visas här."}</pre></div>
