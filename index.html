@@ -135,6 +135,11 @@ h3.group{font-size:15px; text-transform:uppercase; letter-spacing:.08em; color:v
 .jr{display:grid; grid-template-columns:1.4fr 1fr; gap:10px; width:100%}
 .judge{border:2px solid var(--line); background:var(--surface); border-radius:18px; padding:14px 10px; font-family:var(--display); font-size:22px; font-weight:800; box-shadow:0 4px 0 var(--line)}
 .judge.yes{background:var(--good); border-color:var(--good); color:#fff; box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.mic{width:100%; border:none; border-radius:18px; padding:14px 10px; background:var(--accent); color:#fff; font-family:var(--display); font-size:22px; font-weight:800; box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.mic:active{transform:translateY(3px); box-shadow:none}
+.mic.on{animation:pulse 1s ease-in-out infinite}
+.heard{font-family:var(--body); font-size:16px; font-weight:700; color:var(--muted)}
+.heard.ok{color:var(--good)} .heard.no{color:var(--bad)}
 .judge:active{transform:translateY(3px); box-shadow:none}
 .ctrl{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
 .cbtn{background:var(--surface); border:2px solid var(--line); border-radius:18px; padding:10px 4px 8px; display:flex; flex-direction:column; align-items:center; gap:2px; font-size:26px}
@@ -601,7 +606,7 @@ function render(anim){
 
 /* ---------- lyssna & säg efter ---------- */
 let run=0, timers=[];
-function stopAuto(){run++; timers.forEach(clearTimeout); timers=[]; try{speechSynthesis.cancel()}catch(e){}}
+function stopAuto(){run++; timers.forEach(clearTimeout); timers=[]; try{speechSynthesis.cancel()}catch(e){} try{stopRec()}catch(e){}}
 function setTurn(html,cls=""){const t=$("#turn"); if(t){t.className="turn "+cls; t.innerHTML=html}}
 function wiggle(){const p=document.querySelector(".card .anim"); if(p){p.classList.remove("wiggle"); void p.offsetWidth; p.classList.add("wiggle")}}
 function sayAfter(slow){
@@ -611,8 +616,49 @@ function sayAfter(slow){
   speak(w, slow, ()=>{
     if(my!==run) return;
     setTurn(`<div class="yt"><span class="ring"></span>Din tur! Säg det högt</div>
+      ${REC?`<button class="mic" data-a="mic">🎤 Tryck och säg det</button><div class="heard" id="heard"></div>`:""}
       <div class="jr"><button class="judge yes" data-a="good">👍 Det satt</button><button class="judge" data-a="repeat">🔁 Igen</button></div>`,"col");
   });
+}
+
+/* ---------- mikrofon (Safari: Siri/diktering) ---------- */
+const REC = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+let rec=null;
+function stopRec(){try{rec&&rec.abort()}catch(e){} rec=null}
+const MIC_ART=/^(le|la|les|l|un|une|des|du|de|el|los|las|lo|unos|unas|al|del)$/;
+function norm(t){return t.toLowerCase().replace(/\s*\([^)]*\)/g,"").normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+  .replace(/[^a-z0-9ñ ]+/g," ").split(/\s+/).filter(w=>w&&!MIC_ART.test(w)).join(" ")}
+function lev(a,b){const m=a.length,n=b.length; if(!m||!n) return Math.max(m,n); let r=[...Array(n+1).keys()];
+  for(let i=1;i<=m;i++){let prev=r[0]; r[0]=i; for(let j=1;j<=n;j++){const t=r[j]; r[j]=Math.min(r[j]+1,r[j-1]+1,prev+(a[i-1]===b[j-1]?0:1)); prev=t}} return r[n]}
+function micMatch(heard,target){const h=norm(heard), t=norm(target); if(!t) return false;
+  if(h===t||(" "+h+" ").includes(" "+t+" ")) return true;
+  const tol=P()?.kid?0.4:0.3;
+  if(lev(h,t)<=Math.max(1,Math.round(t.length*tol))) return true;
+  // hela meningen inbäddad: titta på lika långa ordfönster
+  const hw=h.split(" "), n=t.split(" ").length;
+  for(let i=0;i+n<=hw.length;i++){const s=hw.slice(i,i+n).join(" "); if(lev(s,t)<=Math.max(1,Math.round(t.length*tol))) return true}
+  return false}
+function heard(html,cls){const h=$("#heard"); if(h){h.className="heard "+(cls||""); h.innerHTML=html}}
+function listen(btn){
+  stopRec(); try{speechSynthesis.cancel()}catch(e){}
+  const my=run, target=cat().items[S.idx][S.lang];
+  rec=new REC(); rec.lang=LANG[S.lang].tts; rec.interimResults=false; rec.maxAlternatives=5; rec.continuous=false;
+  let got=false;
+  btn.classList.add("on"); btn.textContent="🎤 Lyssnar…"; heard("");
+  rec.onresult=e=>{got=true; const alts=[...e.results[0]].map(a=>a.transcript);
+    if(my!==run) return;
+    if(alts.some(a=>micMatch(a,target))){
+      heard("✅ "+(P().kid?LANG[S.lang].praise[Math.random()*5|0]:"Rätt!"),"ok");
+      if(P().kid) S.bubble=LANG[S.lang].praise[Math.random()*5|0];
+      cheer(); const t=setTimeout(()=>{if(my===run) advance()},1100); timers.push(t);
+    } else heard("Jag hörde: <b>"+esc(alts[0]||"…")+"</b> – försök igen!","no")};
+  rec.onerror=e=>{if(my!==run) return; got=true;
+    heard({"not-allowed":"Mikrofonen är inte tillåten. Slå på Siri och diktering, och tillåt mikrofon för Safari.",
+      "service-not-allowed":"Taligenkänning är avstängd. Slå på Siri och diktering i Inställningar.",
+      "network":"Taligenkänningen behöver nät – använd knapparna nedanför.",
+      "no-speech":"Jag hörde inget – tryck och säg det igen!"}[e.error]||"Det gick inte att lyssna – använd knapparna nedanför.","no")};
+  rec.onend=()=>{if(my!==run) return; btn.classList.remove("on"); btn.textContent="🎤 Tryck och säg det igen"; if(!got) heard("Jag hörde inget – försök igen!","no")};
+  try{rec.start()}catch(e){heard("Det gick inte att starta mikrofonen.","no")}
 }
 function advance(){
   const n=cat().items.length;
@@ -625,7 +671,7 @@ function advance(){
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-a]"); if(!b) return;
   const a=b.dataset.a, v=b.dataset.v, L=LANG[S.lang];
-  if(!["repeat","slow","pause","row","qsay","qslow"].includes(a)) stopAuto();
+  if(!["repeat","slow","pause","row","qsay","qslow","mic"].includes(a)) stopAuto();
   if(a==="who"){S.p=null; S.view="who"; render()}
   else if(a==="person"){setPerson(v); render(); if(P().kid){speak(LANG[S.lang].hello+" "+P().name); cheer()}}
   else if(a==="lang"){S.lang=v; store.set("lang_"+S.p,v); S.bubble=null; render(); speak(LANG[v].hello); cheer()}
@@ -641,6 +687,7 @@ document.addEventListener("click",e=>{
     if(S.paused){sayAfter(); b.innerHTML="⏸️<small>Paus</small>"}
     else{stopAuto(); S.paused=true; setTurn("Pausad"); b.innerHTML="▶️<small>Fortsätt</small>"}
   }
+  else if(a==="mic"){listen(b)}
   else if(a==="good"){if(P().kid) S.bubble=L.praise[Math.random()*L.praise.length|0]; advance(); cheer()}
   else if(a==="quiz"){S.quiz=makeQuiz(); S.view="quiz"; S.bubble=L.luck; render(); autoQ()}
   else if(a==="qsay"){speak(S.quiz.qs[S.quiz.i].it[S.lang])}

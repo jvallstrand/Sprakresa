@@ -1,4 +1,4 @@
-const CACHE = 'sprakresa-v1';
+const CACHE = 'sprakresa-v2';
 const FILES = ['./', './index.html'];
 const CDN = /(fonts\.googleapis\.com|fonts\.gstatic\.com|cdnjs\.cloudflare\.com|cdn\.jsdelivr\.net|unpkg\.com)$/;
 self.addEventListener('install', e => {
