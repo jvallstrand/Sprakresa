@@ -612,7 +612,7 @@ function doneView(){
     </div>
   </div>`;
 }
-const APP_VERSION="2026-10-25 10:53";
+const APP_VERSION="2026-10-25 10:58";
 function resetAll(){
   if(!confirm("Börja om från början?\n\nAlla stjärnor, valt språk och vald person raderas för alla på den här enheten.")) return;
   try{Object.keys(localStorage).filter(k=>k.startsWith("sprakresa:")).forEach(k=>localStorage.removeItem(k))}catch(e){}
@@ -679,12 +679,13 @@ function mlog(m){const line=((performance.now()-micT0)/1000).toFixed(2)+"s  "+m;
   const el=$("#mlog"); if(el){el.textContent=MICLOG.join("\n"); el.scrollTop=el.scrollHeight}}
 /* Startar taligenkänning. Safari på iOS levererar ofta bara delresultat och avslutar inte alltid själv,
    därför: interimResults + continuous, egen tystnadstimer och en nödtimer som alltid återställer knappen. */
-function startRec(lang, onText, onDone){
+function startRec(lang, onText, onDone, cont){
   stopRec(); try{speechSynthesis.cancel()}catch(e){}
   micT0=performance.now(); MICLOG.length=0;
   const r=new REC(); rec=r;
-  r.lang=lang; r.interimResults=true; r.continuous=true; r.maxAlternatives=5;
-  mlog("start lang="+lang+" ("+(window.SpeechRecognition?"SpeechRecognition":"webkitSpeechRecognition")+")");
+  if(cont===undefined) cont=(store.get("micmode","single")==="cont");
+  r.lang=lang; r.interimResults=true; r.continuous=!!cont; r.maxAlternatives=5;
+  mlog("start lang="+lang+" continuous="+r.continuous+" hemskärm="+!!(navigator.standalone||matchMedia("(display-mode: standalone)").matches)+" nät="+navigator.onLine);
   let ended=false, quiet=null, stopped=false;
   const finish=(why)=>{if(ended) return; ended=true; clearTimeout(quiet); clearTimeout(hard); clearTimeout(soft); mlog("klar: "+why); if(rec===r) rec=null; onDone(why)};
   const stop=(why)=>{if(stopped) return; stopped=true; mlog("stop() – "+why); try{r.stop()}catch(e){} setTimeout(()=>finish(why),1500)};
@@ -750,6 +751,7 @@ function mictestView(){
     <div class="meter"><i id="mtbar"></i></div><div class="kv" id="mtmeterinfo"></div></div>
   <div class="mt"><h3>2. Förstår taligenkänningen?</h3>
     <div class="btns">${["fr-FR","es-ES","sv-SE"].map(l=>`<button data-a="mtlang" data-v="${l}" aria-pressed="${l===L}">${l}</button>`).join("")}</div>
+    <div class="btns">${[["single","Läge A: enkel"],["cont","Läge B: kontinuerlig"]].map(([k,t])=>`<button data-a="mtmode" data-v="${k}" aria-pressed="${store.get("micmode","single")===k}">${t}</button>`).join("")}</div>
     <div class="btns"><button data-a="mtrec">Lyssna (säg något)</button><button data-a="mtcopy">Kopiera logg</button></div>
     <div class="kv" id="mtheard"></div>
     <pre class="log" id="mlog">${esc(MICLOG.join("\n"))||"Loggen visas här."}</pre></div>
@@ -789,7 +791,7 @@ function advance(){
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-a]"); if(!b) return;
   const a=b.dataset.a, v=b.dataset.v, L=LANG[S.lang];
-  if(!["repeat","slow","pause","row","qsay","qslow","mic","mtlang","mtrec","mtmeter","mtcopy"].includes(a)) stopAuto();
+  if(!["repeat","slow","pause","row","qsay","qslow","mic","mtlang","mtrec","mtmeter","mtcopy","mtmode"].includes(a)) stopAuto();
   if(meterStop && !a.startsWith("mt")){meterStop(); meterStop=null}
   if(a==="who"){S.p=null; S.view="who"; render()}
   else if(a==="person"){setPerson(v); render(); if(P().kid){speak(LANG[S.lang].hello+" "+P().name); cheer()}}
@@ -812,6 +814,7 @@ document.addEventListener("click",e=>{
   else if(a==="mictest"){S.back=S.view; S.view="mictest"; render()}
   else if(a==="mtlang"){S.mtLang=v; document.querySelectorAll("[data-a=mtlang]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.v===v))}
   else if(a==="mtrec"){mtRec(b)}
+  else if(a==="mtmode"){store.set("micmode",v); document.querySelectorAll("[data-a=mtmode]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.v===v))}
   else if(a==="mtmeter"){toggleMeter(b)}
   else if(a==="mtcopy"){const t=MICLOG.join("\n")+"\n\n"+navigator.userAgent; (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>{b.textContent="Kopierad!"},()=>{b.textContent="Gick inte att kopiera"})}
   else if(a==="good"){if(P().kid) S.bubble=L.praise[Math.random()*L.praise.length|0]; advance(); cheer()}
