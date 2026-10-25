@@ -612,7 +612,12 @@ function doneView(){
     </div>
   </div>`;
 }
-const APP_VERSION="2026-10-25 10:35";
+const APP_VERSION="2026-10-25 10:37";
+function resetAll(){
+  if(!confirm("Börja om från början?\n\nAlla stjärnor, valt språk och vald person raderas för alla på den här enheten.")) return;
+  try{Object.keys(localStorage).filter(k=>k.startsWith("sprakresa:")).forEach(k=>localStorage.removeItem(k))}catch(e){}
+  location.reload();
+}
 /* Hämtar senaste sidan förbi alla cachar, lägger den i offlinecachen och laddar om.
    Utan nät laddas bara om, så att offlineversionen finns kvar. */
 async function updateApp(btn){
@@ -630,7 +635,7 @@ function render(anim){
   document.body.dataset.lang=S.lang;
   if(!S.p && S.view!=="mictest") S.view="who";
   const v={mictest:mictestView,who:whoView,home,cat:catView,learn:()=>learn(anim),quiz:quizView,done:doneView}[S.view];
-  $("#app").innerHTML=v()+`<div class="foot"><button class="linkbtn" data-a="reload">🔄 Uppdatera appen</button><small>Version ${APP_VERSION}</small></div>`;
+  $("#app").innerHTML=v()+`<div class="foot"><button class="linkbtn" data-a="reload">🔄 Uppdatera appen</button><button class="linkbtn" data-a="reset">🧹 Börja om från början</button><small>Version ${APP_VERSION}</small></div>`;
   scrollTo(0,0);
 }
 
@@ -803,6 +808,7 @@ document.addEventListener("click",e=>{
   }
   else if(a==="mic"){listen(b)}
   else if(a==="reload"){updateApp(b)}
+  else if(a==="reset"){resetAll()}
   else if(a==="mictest"){S.back=S.view; S.view="mictest"; render()}
   else if(a==="mtlang"){S.mtLang=v; document.querySelectorAll("[data-a=mtlang]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.v===v))}
   else if(a==="mtrec"){mtRec(b)}
