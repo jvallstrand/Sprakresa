@@ -276,7 +276,7 @@ const LANG = {
 const PROFILES = {
   lily:{name:"Lily", icon:"👧", kid:true, langs:["fr","es","it","rv"], title:"Lilys <span>språkresa</span>", blurb:"Franska, spanska och italienska med bilder, ljud och quiz"},
   filippa:{name:"Filippa", icon:"👩", langs:["fr","rv"], title:"Franska för <span>Normandie & Paris</span>", blurb:"Franska: mat i Normandie och shopping i Paris"},
-  lukas:{name:"Lukas", icon:"👦", langs:["es","rv"], title:"Spanska: <span>grunder & grammatik</span>", blurb:"Spanska: ord, verb och grammatik"},
+  lukas:{name:"Lukas", icon:"👦", langs:["es","fr","rv"], title:"Språk: <span>grunder & grammatik</span>", blurb:"Spanska och franska: ord, verb och grammatik"},
   johan:{name:"Johan", icon:"👨", langs:["es","it","fr","rv"], borrow:["lukas:grammar","filippa"], title:"Språk för <span>vin & resor</span>", blurb:"Mest spanska, plus italienska och franska: vin, mat och grammatik"}
 };
 
@@ -362,6 +362,8 @@ const FILIPPA = [
 ].map(c=>({...c, who:"filippa", kind:"text"}));
 
 /* ---------- Lukas ---------- */
+/* franska för Lukas ordteman, i samma ordning som orden */
+const LUKAS_FR={"lgrund": ["les bases", ["salut", "au revoir", "bonjour", "merci", "s'il te plaît", "je m'appelle Lukas", "je ne comprends pas", "tu parles anglais ?"]], "lsiffror": ["les nombres", ["un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf", "vingt"]], "ldagar": ["les jours", ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche", "aujourd'hui", "demain"]], "lfamilj": ["la famille", ["la mère", "le père", "le frère", "la sœur", "le grand-père", "la grand-mère", "le cousin", "les parents"]]};
 const ar=s=>["o","as","a","amos","áis","an"].map(e=>s+e);
 const er=s=>["o","es","e","emos","éis","en"].map(e=>s+e);
 const ir=s=>["o","es","e","imos","ís","en"].map(e=>s+e);
@@ -470,7 +472,7 @@ const LUKAS = [
     {sv:"mamma", es:"la madre", e:"👩"},{sv:"pappa", es:"el padre", e:"👨"},{sv:"bror", es:"el hermano", e:"👦"},
     {sv:"syster", es:"la hermana", e:"👧"},{sv:"farfar / morfar", es:"el abuelo", e:"👴"},{sv:"farmor / mormor", es:"la abuela", e:"👵"},
     {sv:"kusin", es:"el primo", e:"🧒"},{sv:"föräldrarna", es:"los padres", e:"👫"}]}
-  ].map(c=>({...c, who:"lukas", group:"Ord"}))
+  ].map(c=>({...c, who:"lukas", group:"Ord", fx:{...c.fx, fr:LUKAS_FR[c.id][0]}, items:c.items.map((it,i)=>({...it, fr:LUKAS_FR[c.id][1][i]}))}))
 ];
 /* ---------- Johan ---------- */
 const JOHAN = [
@@ -519,7 +521,23 @@ JOHAN.push({id:"jrist", group:"Mat & resa", sv:"På ristorante", e:"🍝", fx:{i
   {sv:"En espresso, tack.", it:"Un caffè, per favore.", e:"☕"},
   {sv:"Det var jättegott!", it:"Era buonissimo!", e:"😋"},
   {sv:"Notan, tack.", it:"Il conto, per favore.", e:"🧾"}]});
-const CATS=[...LILY,...FILIPPA,...LUKAS,...JOHAN];
+/* ---------- Det viktigaste: för alla, på alla språk ---------- */
+const BAS={id:"bas", group:"Börja här", sv:"Det viktigaste", e:"⭐", fx:{fr:"l'essentiel",es:"lo esencial",it:"l'essenziale"}, who:"all", kind:"text", items:[
+  {sv:"hej", fr:"bonjour", es:"hola", it:"ciao", e:"👋"},
+  {sv:"hej då", fr:"au revoir", es:"adiós", it:"arrivederci", e:"🚪"},
+  {sv:"tack", fr:"merci", es:"gracias", it:"grazie", e:"🙏"},
+  {sv:"snälla / tack (vid beställning)", fr:"s'il vous plaît", es:"por favor", it:"per favore", e:"🥺"},
+  {sv:"ja", fr:"oui", es:"sí", it:"sì", e:"👍"},
+  {sv:"nej", fr:"non", es:"no", it:"no", e:"👎"},
+  {sv:"ursäkta", fr:"excusez-moi", es:"perdone", it:"mi scusi", e:"🙋"},
+  {sv:"förlåt", fr:"pardon", es:"perdón", it:"scusa", e:"😅"},
+  {sv:"jag förstår inte", fr:"je ne comprends pas", es:"no entiendo", it:"non capisco", e:"🤷"},
+  {sv:"talar du engelska?", fr:"vous parlez anglais ?", es:"¿habla inglés?", it:"parla inglese?", e:"🇬🇧"},
+  {sv:"var är toaletten?", fr:"où sont les toilettes ?", es:"¿dónde está el baño?", it:"dov'è il bagno?", e:"🚻"},
+  {sv:"vad kostar det?", fr:"c'est combien ?", es:"¿cuánto cuesta?", it:"quanto costa?", e:"💶"},
+  {sv:"hjälp!", fr:"au secours !", es:"¡socorro!", it:"aiuto!", e:"🆘"}]};
+BAS.fx.rv=rov(BAS.sv); BAS.items.forEach(it=>it.rv=rov(it.sv));
+const CATS=[BAS,...LILY,...FILIPPA,...LUKAS,...JOHAN];
 
 /* ---------- lagring ---------- */
 const store = {
@@ -568,9 +586,10 @@ const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random(
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cat=()=>CATS.find(c=>c.id===S.cat);
 const P=()=>PROFILES[S.p];
-const owns=(c,p)=>c.who===p || (PROFILES[p].borrow||[]).some(b=>{const [w,k]=b.split(":"); return c.who===w && (!k||c.kind===k)});
+const owns=(c,p)=>c.who===p || c.who==="all" || (PROFILES[p].borrow||[]).some(b=>{const [w,k]=b.split(":"); return c.who===w && (!k||c.kind===k)});
 /* Rövarspråket använder Lilys bildteman för alla */
-const myCats=()=>CATS.filter(c=>(S.lang==="rv"?c.who==="lily":owns(c,S.p)) && c.fx[S.lang]!=null).sort((x,y)=>(x.who===S.p?0:1)-(y.who===S.p?0:1));
+const rank=c=>c.who==="all"?0:c.who===S.p?1:2;
+const myCats=()=>CATS.filter(c=>(S.lang==="rv"?(c.who==="lily"||c.who==="all"):owns(c,S.p)) && c.fx[S.lang]!=null).sort((x,y)=>rank(x)-rank(y));
 const hasPic=it=>it.c||it.n!=null||it.e;
 function pic(it){
   if(it.c) return `<span class="swatch" style="background:${it.c}"></span>`;
@@ -823,7 +842,7 @@ function doneView(){
     </div>
   </div>`;
 }
-const APP_VERSION="2026-10-25 15:00";
+const APP_VERSION="2026-10-25 15:10";
 function resetAll(){
   if(!confirm("Börja om från början?\n\nAlla stjärnor, valt språk och vald person raderas för alla på den här enheten.")) return;
   try{Object.keys(localStorage).filter(k=>k.startsWith("sprakresa:")).forEach(k=>localStorage.removeItem(k))}catch(e){}
