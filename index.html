@@ -224,14 +224,18 @@ h3.group{font-size:15px; text-transform:uppercase; letter-spacing:.08em; color:v
 <div class="wrap" id="app"></div>
 
 <script>
+/* Rövarspråket: varje konsonant dubbleras med ett o emellan (k → kok). */
+const rov=t=>t.replace(/[bcdfghjklmnpqrstvwxzBCDFGHJKLMNPQRSTVWXZ]/g,c=>c+"o"+c.toLowerCase());
 const LANG = {
+  rv:{name:"Rövarspråket", flag:"🏴‍☠️", tts:"sv-SE", hello:rov("Hej!"), praise:["Bra!","Snyggt!","Toppen!","Grymt!","Perfekt!"].map(rov), oops:rov("Hoppsan!"), sv:"rövarspråket", luck:rov("Lycka till!")},
   fr:{name:"Franska", flag:"🇫🇷", tts:"fr-FR", hello:"Bonjour !", praise:["Bravo !","Super !","Très bien !","Génial !","Parfait !"], oops:"Oups !", sv:"franska", luck:"Bonne chance !"},
   es:{name:"Spanska", flag:"🇪🇸", tts:"es-ES", hello:"¡Hola!", praise:["¡Muy bien!","¡Genial!","¡Bravo!","¡Perfecto!","¡Fantástico!"], oops:"¡Ups!", sv:"spanska", luck:"¡Buena suerte!"}
 };
 const PROFILES = {
-  lily:{name:"Lily", icon:"👧", kid:true, langs:["fr","es"], title:"Lilys <span>språkresa</span>", blurb:"Franska och spanska med bilder, ljud och quiz"},
-  filippa:{name:"Filippa", icon:"👩", langs:["fr"], title:"Franska för <span>Normandie & Paris</span>", blurb:"Franska: mat i Normandie och shopping i Paris"},
-  lukas:{name:"Lukas", icon:"👦", langs:["es"], title:"Spanska: <span>grunder & grammatik</span>", blurb:"Spanska: ord, verb och grammatik"}
+  lily:{name:"Lily", icon:"👧", kid:true, langs:["fr","es","rv"], title:"Lilys <span>språkresa</span>", blurb:"Franska och spanska med bilder, ljud och quiz"},
+  filippa:{name:"Filippa", icon:"👩", langs:["fr","rv"], title:"Franska för <span>Normandie & Paris</span>", blurb:"Franska: mat i Normandie och shopping i Paris"},
+  lukas:{name:"Lukas", icon:"👦", langs:["es","rv"], title:"Spanska: <span>grunder & grammatik</span>", blurb:"Spanska: ord, verb och grammatik"},
+  johan:{name:"Johan", icon:"👨", langs:["es","fr","rv"], borrow:["lukas:grammar","filippa"], title:"Spanska för <span>vin & resor</span>", blurb:"Mest spanska: vin, tapas och grammatik"}
 };
 
 /* ---------- Lily ---------- */
@@ -266,7 +270,7 @@ const LILY = [
     {sv:"bilen", fr:"la voiture", es:"el coche", e:"🚗"},{sv:"slottet", fr:"le château", es:"el castillo", e:"🏰"},
     {sv:"hotellet", fr:"l'hôtel", es:"el hotel", e:"🏨"},{sv:"tornet", fr:"la tour", es:"la torre", e:"🗼"},
     {sv:"båten", fr:"le bateau", es:"el barco", e:"⛵"},{sv:"var är toaletten?", fr:"où sont les toilettes ?", es:"¿dónde está el baño?", e:"🚻"}]}
-].map(c=>({...c, who:"lily", kind:"pic"}));
+].map(c=>({...c, who:"lily", kind:"pic", fx:{...c.fx, rv:rov(c.sv)}, items:c.items.map(it=>({...it, rv:rov(it.sv)}))}));
 
 /* ---------- Filippa ---------- */
 const FILIPPA = [
@@ -424,7 +428,39 @@ const LUKAS = [
     {sv:"kusin", es:"el primo", e:"🧒"},{sv:"föräldrarna", es:"los padres", e:"👫"}]}
   ].map(c=>({...c, who:"lukas", group:"Ord"}))
 ];
-const CATS=[...LILY,...FILIPPA,...LUKAS];
+/* ---------- Johan ---------- */
+const JOHAN = [
+  {id:"jvin", group:"Vin", sv:"Vinord", e:"🍷", fx:{es:"el vino"}, items:[
+    {sv:"rött vin", es:"el vino tinto", e:"🍷"},{sv:"vitt vin", es:"el vino blanco", e:"🥂"},
+    {sv:"druvan", es:"la uva", e:"🍇"},{sv:"årgången", es:"la añada", e:"📅"},
+    {sv:"vinhuset, vinkällaren", es:"la bodega", e:"🏛️"},{sv:"vingården", es:"el viñedo", e:"🌱"},
+    {sv:"ekfatet", es:"la barrica", e:"🛢️"},{sv:"vinprovningen", es:"la cata", e:"👃"},
+    {sv:"vinmakaren", es:"el enólogo", e:"🧑‍🌾"},{sv:"mat och vin", es:"el maridaje", e:"🍽️"}]},
+  {id:"jcata", group:"Vin", sv:"På vinhuset", e:"🍇", fx:{es:"en la bodega"}, items:[
+    {sv:"Kan vi provsmaka vinerna?", es:"¿Podemos catar los vinos?", e:"🍷"},
+    {sv:"Vilka druvor är det i?", es:"¿Qué variedades de uva lleva?", e:"🍇"},
+    {sv:"Hur länge har det legat på fat?", es:"¿Cuánto tiempo ha estado en barrica?", e:"🛢️"},
+    {sv:"Det är fruktigt och friskt.", es:"Es afrutado y fresco.", e:"🍋"},
+    {sv:"Har ni en flaska från 2019?", es:"¿Tienen una botella de 2019?", e:"🍾"},
+    {sv:"Jag skriver om vin.", es:"Escribo sobre vino.", e:"✍️"},
+    {sv:"Kan man köpa direkt här?", es:"¿Se puede comprar aquí directamente?", e:"🛒"},
+    {sv:"Skål!", es:"¡Salud!", e:"🥂"}]},
+  {id:"jtapas", group:"Mat & resa", sv:"Tapas & restaurang", e:"🫒", fx:{es:"de tapas"}, items:[
+    {sv:"Har ni ett bord för fyra?", es:"¿Tienen mesa para cuatro?", e:"🍽️"},
+    {sv:"Menyn, tack.", es:"La carta, por favor.", e:"📜"},
+    {sv:"Vad rekommenderar ni?", es:"¿Qué nos recomienda?", e:"🤔"},
+    {sv:"Lite smått att dela.", es:"Algo para picar.", e:"🫒"},
+    {sv:"En portion iberisk skinka.", es:"Una ración de jamón ibérico.", e:"🍖"},
+    {sv:"En liten fatöl, tack.", es:"Una caña, por favor.", e:"🍺"},
+    {sv:"Det var jättegott!", es:"¡Estaba buenísimo!", e:"😋"},
+    {sv:"Notan, tack.", es:"La cuenta, por favor.", e:"🧾"}]},
+  {id:"jgrund", group:"Mat & resa", sv:"Klara sig", e:"💬", fx:{es:"lo esencial"}, items:[
+    {sv:"Ursäkta.", es:"Perdone.", e:"🙋‍♂️"},{sv:"Jag förstår inte.", es:"No entiendo.", e:"🤷‍♂️"},
+    {sv:"Kan ni säga det igen?", es:"¿Puede repetirlo?", e:"🔁"},{sv:"Lite långsammare, tack.", es:"Más despacio, por favor.", e:"🐢"},
+    {sv:"Talar ni engelska?", es:"¿Habla inglés?", e:"🇬🇧"},{sv:"Var ligger …?", es:"¿Dónde está …?", e:"🗺️"},
+    {sv:"Vad kostar det?", es:"¿Cuánto cuesta?", e:"💶"},{sv:"Ha en trevlig dag!", es:"¡Que tenga un buen día!", e:"☀️"}]}
+].map(c=>({...c, who:"johan", kind:"text"}));
+const CATS=[...LILY,...FILIPPA,...LUKAS,...JOHAN];
 
 /* ---------- lagring ---------- */
 const store = {
@@ -473,7 +509,9 @@ const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random(
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cat=()=>CATS.find(c=>c.id===S.cat);
 const P=()=>PROFILES[S.p];
-const myCats=()=>CATS.filter(c=>c.who===S.p && c.fx[S.lang]!=null);
+const owns=(c,p)=>c.who===p || (PROFILES[p].borrow||[]).some(b=>{const [w,k]=b.split(":"); return c.who===w && (!k||c.kind===k)});
+/* Rövarspråket använder Lilys bildteman för alla */
+const myCats=()=>CATS.filter(c=>(S.lang==="rv"?c.who==="lily":owns(c,S.p)) && c.fx[S.lang]!=null).sort((x,y)=>(x.who===S.p?0:1)-(y.who===S.p?0:1));
 const hasPic=it=>it.c||it.n!=null||it.e;
 function pic(it){
   if(it.c) return `<span class="swatch" style="background:${it.c}"></span>`;
@@ -485,51 +523,59 @@ function starStr(n){return "★★★".split("").map((s,i)=>i<n?`<b>${s}</b>`:s)
 const key=c=>S.p+":"+S.lang+":"+c;
 
 /* ---------- figurer för personerna ---------- */
-const SKIN="#F7D3B6", SKIN2="#EDB998", INK="#1B2240";
-const eyes=(y=52,dx=11,big=false)=>`<g class="eyes">
-  <ellipse cx="${50-dx}" cy="${y}" rx="${big?5.2:4.4}" ry="${big?6:5}" fill="${INK}"/><ellipse cx="${50+dx}" cy="${y}" rx="${big?5.2:4.4}" ry="${big?6:5}" fill="${INK}"/>
-  <circle cx="${50-dx+1.6}" cy="${y-2}" r="1.7" fill="#fff"/><circle cx="${50+dx+1.6}" cy="${y-2}" r="1.7" fill="#fff"/></g>`;
-const cheeks=(y=62)=>`<ellipse cx="33" cy="${y}" rx="5.5" ry="3.5" fill="#FF8FA3" opacity=".55"/><ellipse cx="67" cy="${y}" rx="5.5" ry="3.5" fill="#FF8FA3" opacity=".55"/>`;
+const SKIN="#F6CFAE", SKIN2="#E2A882", INK="#1B2240";
+const eyes=(y=52,dx=10,big=false)=>`<g class="eyes">
+  <ellipse cx="${50-dx}" cy="${y}" rx="${big?4.6:4}" ry="${big?5.4:4.6}" fill="${INK}"/><ellipse cx="${50+dx}" cy="${y}" rx="${big?4.6:4}" ry="${big?5.4:4.6}" fill="${INK}"/>
+  <circle cx="${50-dx+1.5}" cy="${y-1.8}" r="1.6" fill="#fff"/><circle cx="${50+dx+1.5}" cy="${y-1.8}" r="1.6" fill="#fff"/></g>`;
+const cheeks=(y=62)=>`<ellipse cx="34" cy="${y}" rx="5" ry="3.2" fill="#FF8FA3" opacity=".5"/><ellipse cx="66" cy="${y}" rx="5" ry="3.2" fill="#FF8FA3" opacity=".5"/>`;
+/* gemensam kropp: bakgrund, axlar, hals, öron, huvud, näsa – hår och detaljer läggs på per person */
+const face=(k,bg,shirt,back,front,extra)=>`<svg viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="av-${k}"><circle cx="50" cy="50" r="48"/></clipPath></defs><g clip-path="url(#av-${k})">
+  <circle cx="50" cy="50" r="48" fill="${bg}"/>${back}
+  <path d="M12 104 Q14 82 50 81 Q86 82 88 104Z" fill="${shirt}"/>
+  <path d="M43 68 h14 v13 q-7 5 -14 0Z" fill="${SKIN2}"/>
+  <ellipse cx="24" cy="54" rx="4.5" ry="6.5" fill="${SKIN2}"/><ellipse cx="76" cy="54" rx="4.5" ry="6.5" fill="${SKIN2}"/>
+  <ellipse cx="50" cy="51" rx="26" ry="28" fill="${SKIN}"/>
+  <path d="M49 55 q-2.5 5 1.5 6" stroke="${SKIN2}" stroke-width="2" fill="none" stroke-linecap="round"/>
+  ${front}${extra}</g></svg>`;
 const AVATARS={
-  /* Lily: tofsar med en blå och en röd rosett, stora ögon och glatt leende */
-  lily:`<svg viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="av-lily"><circle cx="50" cy="50" r="48"/></clipPath></defs><g clip-path="url(#av-lily)">
-    <circle cx="50" cy="50" r="48" fill="#FFE7A8"/>
-    <circle cx="16" cy="50" r="13" fill="#B8572E"/><circle cx="84" cy="50" r="13" fill="#B8572E"/>
-    <circle cx="11" cy="62" r="9" fill="#B8572E"/><circle cx="89" cy="62" r="9" fill="#B8572E"/>
-    <path d="M20 40 l-9 -8 l2 13 Z M20 40 l-12 4 l12 6 Z" fill="#2F5BFF"/><circle cx="20" cy="42" r="3.5" fill="#2F5BFF"/>
-    <path d="M80 40 l9 -8 l-2 13 Z M80 40 l12 4 l-12 6 Z" fill="#E3313F"/><circle cx="80" cy="42" r="3.5" fill="#E3313F"/>
-    <path d="M24 92 Q50 74 76 92 Q70 100 50 100 Q30 100 24 92Z" fill="#FF6FA0"/>
-    <ellipse cx="50" cy="54" rx="27" ry="28" fill="${SKIN}"/>
-    <path d="M23 50 Q22 22 50 22 Q78 22 77 50 Q70 36 58 34 Q60 42 52 44 Q54 36 46 34 Q36 36 30 44 Q26 46 23 50Z" fill="#B8572E"/>
-    ${eyes(55,10,true)}${cheeks(64)}
-    <circle cx="44" cy="62" r="1" fill="${SKIN2}"/><circle cx="56" cy="62" r="1" fill="${SKIN2}"/><circle cx="50" cy="64" r="1" fill="${SKIN2}"/>
-    <path d="M41 68 Q50 77 59 68 Q50 72 41 68Z" fill="#C2185B"/></g></svg>`,
-  /* Filippa: solglasögon uppskjutna i håret, sjal och röda läppar */
-  filippa:`<svg viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="av-filippa"><circle cx="50" cy="50" r="48"/></clipPath></defs><g clip-path="url(#av-filippa)">
-    <circle cx="50" cy="50" r="48" fill="#D9E4FF"/>
-    <path d="M18 98 Q18 60 50 58 Q82 60 82 98Z" fill="#D9A441"/>
-    <path d="M22 96 Q50 70 78 96 L78 100 L22 100Z" fill="#2F5BFF"/>
-    <path d="M34 80 Q50 92 66 80 L62 76 Q50 84 38 76Z" fill="#FF4D5A"/><path d="M60 80 l10 14 l-7 2 l-6 -13Z" fill="#FF4D5A"/>
-    <ellipse cx="50" cy="52" rx="24" ry="27" fill="${SKIN}"/>
-    <path d="M24 56 Q20 22 50 20 Q80 22 76 56 Q74 40 66 34 Q52 40 34 34 Q26 40 24 56Z" fill="#D9A441"/>
-    <g><rect x="29" y="28" width="17" height="10" rx="5" fill="${INK}"/><rect x="54" y="28" width="17" height="10" rx="5" fill="${INK}"/><path d="M46 32 h8" stroke="${INK}" stroke-width="2.5"/>
-    <rect x="32" y="30" width="5" height="2" rx="1" fill="#fff" opacity=".6"/><rect x="57" y="30" width="5" height="2" rx="1" fill="#fff" opacity=".6"/></g>
-    ${eyes(52,10)}<path d="M35 46 q5 -3 9 0 M56 46 q5 -3 9 0" stroke="${INK}" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-    ${cheeks(61)}<path d="M42 66 Q50 74 58 66 Q50 69 42 66Z" fill="#E0354A"/>
-    <circle cx="27" cy="62" r="2.5" fill="#F5B400"/><circle cx="73" cy="62" r="2.5" fill="#F5B400"/></g></svg>`,
-  /* Lukas: keps bakochfram, hörlurar och fräknar */
-  lukas:`<svg viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="av-lukas"><circle cx="50" cy="50" r="48"/></clipPath></defs><g clip-path="url(#av-lukas)">
-    <circle cx="50" cy="50" r="48" fill="#FFD9C2"/>
-    <path d="M20 100 Q22 76 50 74 Q78 76 80 100Z" fill="#1FA55B"/><path d="M44 76 L50 86 L56 76" stroke="#fff" stroke-width="3" fill="none"/>
-    <ellipse cx="50" cy="52" rx="25" ry="26" fill="${SKIN}"/>
-    <path d="M25 46 Q26 24 50 24 Q74 24 75 46 Q66 36 50 37 Q34 36 25 46Z" fill="#6B3E26"/>
-    <path d="M27 40 Q28 18 50 18 Q72 18 73 40 Q50 32 27 40Z" fill="#E3313F"/>
-    <path d="M24 38 Q12 40 10 48 Q20 46 30 42Z" fill="#B71C2C"/><circle cx="50" cy="19" r="3" fill="#B71C2C"/>
-    <path d="M22 52 Q20 26 50 26 Q80 26 78 52" stroke="${INK}" stroke-width="4" fill="none"/>
-    <rect x="15" y="46" width="11" height="18" rx="5" fill="#2F5BFF"/><rect x="74" y="46" width="11" height="18" rx="5" fill="#2F5BFF"/>
-    ${eyes(53,10)}<path d="M34 45 l9 1 M57 46 l9 -1" stroke="#6B3E26" stroke-width="2.4" stroke-linecap="round"/>
-    <g fill="#C9875E"><circle cx="35" cy="61" r="1.2"/><circle cx="39" cy="63" r="1.2"/><circle cx="33" cy="64" r="1.2"/><circle cx="65" cy="61" r="1.2"/><circle cx="61" cy="63" r="1.2"/><circle cx="67" cy="64" r="1.2"/></g>
-    <path d="M40 67 Q52 78 62 66" stroke="${INK}" stroke-width="2.6" fill="none" stroke-linecap="round"/></g></svg>`
+  /* Lily: tofsar med en blå och en röd rosett */
+  lily:face("lily","#FFE7A8","#FF6FA0",
+    `<circle cx="17" cy="58" r="12" fill="#B4562C"/><circle cx="83" cy="58" r="12" fill="#B4562C"/><circle cx="14" cy="72" r="8" fill="#B4562C"/><circle cx="86" cy="72" r="8" fill="#B4562C"/>`,
+    `<path d="M24 50 Q22 20 50 20 Q78 20 76 50 Q74 40 70 36 Q66 42 60 38 Q56 44 50 39 Q44 44 40 38 Q34 42 30 36 Q26 40 24 50Z" fill="#B4562C"/>
+     <path d="M18 44 L7 36 L7 52Z M18 44 L29 36 L29 52Z" fill="#2F5BFF"/><circle cx="18" cy="44" r="3.4" fill="#1F44D6"/>
+     <path d="M82 44 L71 36 L71 52Z M82 44 L93 36 L93 52Z" fill="#E3313F"/><circle cx="82" cy="44" r="3.4" fill="#B71C2C"/>
+     ${eyes(53,10,true)}<path d="M36 44 q4 -2 8 0 M56 44 q4 -2 8 0" stroke="#8A3E1D" stroke-width="1.6" fill="none" stroke-linecap="round"/>${cheeks(63)}`,
+    `<path d="M41 66 Q50 75 59 66 Q50 70 41 66Z" fill="#C2185B"/>`),
+  /* Filippa: långt hår, solglasögon i håret, sjal och örhängen */
+  filippa:face("filippa","#D9E4FF","#2F5BFF",
+    `<path d="M22 46 Q20 18 50 17 Q80 18 78 46 L82 90 Q50 98 18 90Z" fill="#C9963B"/>`,
+    `<path d="M24 52 Q22 22 50 21 Q78 22 76 52 Q72 36 62 31 Q50 42 30 38 Q26 44 24 52Z" fill="#D9A441"/>
+     <rect x="31" y="25" width="16" height="9" rx="4.5" fill="${INK}"/><rect x="53" y="25" width="16" height="9" rx="4.5" fill="${INK}"/><path d="M47 29 h6" stroke="${INK}" stroke-width="2.4"/>
+     <rect x="34" y="27" width="5" height="2" rx="1" fill="#fff" opacity=".55"/><rect x="56" y="27" width="5" height="2" rx="1" fill="#fff" opacity=".55"/>
+     ${eyes(52,10)}<path d="M35 46 q5 -3 9 -.5 M56 45.5 q5 -2.5 9 .5" stroke="#6B4A1E" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+     <path d="M36 50 l-3 -2 M64 50 l3 -2" stroke="${INK}" stroke-width="1.3" stroke-linecap="round"/>${cheeks(62)}`,
+    `<path d="M42 66 Q50 73 58 66 Q50 68.5 42 66Z" fill="#D7263D"/>
+     <circle cx="24" cy="62" r="2.6" fill="#F5B400"/><circle cx="76" cy="62" r="2.6" fill="#F5B400"/>
+     <path d="M30 84 Q50 96 70 84 L66 79 Q50 88 34 79Z" fill="#FF4D5A"/><path d="M60 86 l9 13 l-7 2 l-6 -13Z" fill="#E33A48"/>`),
+  /* Lukas: rufsigt hår, hörlurar och fräknar */
+  lukas:face("lukas","#FFD9C2","#1FA55B","",
+    `<path d="M24 48 Q22 22 50 21 Q78 22 76 48 Q72 38 66 35 L64 40 L58 33 L54 39 L48 32 L44 38 L38 33 L36 40 Q28 40 24 48Z" fill="#6B3E26"/>
+     <path d="M40 22 l4 -8 l4 7 l5 -9 l3 9 l6 -6 l-1 8Z" fill="#6B3E26"/>
+     <path d="M21 54 Q19 22 50 20 Q81 22 79 54" stroke="${INK}" stroke-width="4" fill="none"/>
+     <rect x="15" y="46" width="11" height="18" rx="5" fill="#2F5BFF"/><rect x="74" y="46" width="11" height="18" rx="5" fill="#2F5BFF"/>
+     ${eyes(52,10)}<path d="M35 44 l9 1 M56 45 l9 -1" stroke="#5A3220" stroke-width="2.4" stroke-linecap="round"/>
+     <g fill="#C9875E"><circle cx="35" cy="60" r="1.2"/><circle cx="39" cy="62" r="1.2"/><circle cx="34" cy="63.5" r="1.2"/><circle cx="65" cy="60" r="1.2"/><circle cx="61" cy="62" r="1.2"/><circle cx="66" cy="63.5" r="1.2"/></g>`,
+    `<path d="M40 66 Q51 76 61 65" stroke="${INK}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+     <path d="M42 82 L50 90 L58 82" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>`),
+  /* Johan: glasögon, skäggstubb och ett glas rött */
+  johan:face("johan","#E4DCFF","#2B3A67","",
+    `<path d="M29 60 Q31 80 50 80 Q69 80 71 60 Q66 72 50 72 Q34 72 29 60Z" fill="#8C6A4A" opacity=".3"/>
+     <path d="M24 48 Q22 20 50 20 Q78 20 76 48 Q73 34 60 31 Q50 37 36 32 Q28 38 24 48Z" fill="#A47B4F"/>
+     <g fill="none" stroke="${INK}" stroke-width="2.4"><circle cx="40" cy="52" r="8"/><circle cx="60" cy="52" r="8"/><path d="M48 51 h4 M32 51 l-7 -2 M68 51 l7 -2"/></g>
+     ${eyes(52,10)}<path d="M33 41 l9 -1 M58 40 l9 1" stroke="#7A5A38" stroke-width="2.4" stroke-linecap="round"/>${cheeks(63)}`,
+    `<path d="M41 66 Q50 74 59 66" stroke="${INK}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+     <path d="M44 81 L50 88 L56 81" fill="#fff"/>
+     <g transform="translate(77 70) rotate(10)"><path d="M-7 0 Q-7 12 0 12 Q7 12 7 0Z" fill="#8E1B3A"/><path d="M-7 0 Q-7 12 0 12 Q7 12 7 0 M0 12 v10 M-5 22 h10" stroke="#fff" stroke-width="1.6" fill="none"/></g>`)
 };
 const avatar=k=>AVATARS[k]||"";
 
@@ -562,8 +608,7 @@ function whoView(){
   return `<h1 class="disp" style="padding-top:8px">Vem ska <span>öva</span>?</h1>
   <div class="people">${Object.entries(PROFILES).map(([k,p])=>`<button class="person" data-a="person" data-v="${k}" data-l="${p.langs.length>1?"both":p.langs[0]}">
     <span class="pi">${avatar(k)}</span><span><b>${p.name}</b><small>${p.blurb}</small></span></button>`).join("")}</div>
-  <p class="note">Varje person har sina egna teman och stjärnor. Allt sparas bara på den här enheten.</p>
-  <button class="linkbtn" data-a="mictest">🎤 Mictest</button>`;
+  <p class="note">Varje person har sina egna teman och stjärnor. Allt sparas bara på den här enheten.</p>`;
 }
 function home(){
   const p=P(), cats=myCats(), groups=[...new Set(cats.map(c=>c.group||""))];
@@ -668,7 +713,7 @@ function doneView(){
     </div>
   </div>`;
 }
-const APP_VERSION="2026-10-25 11:20";
+const APP_VERSION="2026-10-25 11:35";
 function resetAll(){
   if(!confirm("Börja om från början?\n\nAlla stjärnor, valt språk och vald person raderas för alla på den här enheten.")) return;
   try{Object.keys(localStorage).filter(k=>k.startsWith("sprakresa:")).forEach(k=>localStorage.removeItem(k))}catch(e){}
@@ -707,7 +752,7 @@ function sayAfter(slow){
   speak(w, slow, ()=>{
     if(my!==run) return;
     setTurn(`<div class="yt"><span class="ring"></span>Din tur! Säg det högt</div>
-      ${REC?`<button class="mic" data-a="mic">🎤 Tryck och säg det</button><div class="heard" id="heard"></div>`:""}
+      ${REC&&S.lang!=="rv"?`<button class="mic" data-a="mic">🎤 Tryck och säg det</button><div class="heard" id="heard"></div>`:""}
       <div class="jr"><button class="judge yes" data-a="good">👍 Det satt</button><button class="judge" data-a="repeat">🔁 Igen</button></div>`,"col");
   });
 }
