@@ -523,59 +523,111 @@ function starStr(n){return "★★★".split("").map((s,i)=>i<n?`<b>${s}</b>`:s)
 const key=c=>S.p+":"+S.lang+":"+c;
 
 /* ---------- figurer för personerna ---------- */
-const SKIN="#F6CFAE", SKIN2="#E2A882", INK="#1B2240";
-const eyes=(y=52,dx=10,big=false)=>`<g class="eyes">
-  <ellipse cx="${50-dx}" cy="${y}" rx="${big?4.6:4}" ry="${big?5.4:4.6}" fill="${INK}"/><ellipse cx="${50+dx}" cy="${y}" rx="${big?4.6:4}" ry="${big?5.4:4.6}" fill="${INK}"/>
-  <circle cx="${50-dx+1.5}" cy="${y-1.8}" r="1.6" fill="#fff"/><circle cx="${50+dx+1.5}" cy="${y-1.8}" r="1.6" fill="#fff"/></g>`;
-const cheeks=(y=62)=>`<ellipse cx="34" cy="${y}" rx="5" ry="3.2" fill="#FF8FA3" opacity=".5"/><ellipse cx="66" cy="${y}" rx="5" ry="3.2" fill="#FF8FA3" opacity=".5"/>`;
-/* gemensam kropp: bakgrund, axlar, hals, öron, huvud, näsa – hår och detaljer läggs på per person */
-const face=(k,bg,shirt,back,front,extra)=>`<svg viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="av-${k}"><circle cx="50" cy="50" r="48"/></clipPath></defs><g clip-path="url(#av-${k})">
-  <circle cx="50" cy="50" r="48" fill="${bg}"/>${back}
-  <path d="M12 104 Q14 82 50 81 Q86 82 88 104Z" fill="${shirt}"/>
-  <path d="M43 68 h14 v13 q-7 5 -14 0Z" fill="${SKIN2}"/>
-  <ellipse cx="24" cy="54" rx="4.5" ry="6.5" fill="${SKIN2}"/><ellipse cx="76" cy="54" rx="4.5" ry="6.5" fill="${SKIN2}"/>
-  <ellipse cx="50" cy="51" rx="26" ry="28" fill="${SKIN}"/>
-  <path d="M49 55 q-2.5 5 1.5 6" stroke="${SKIN2}" stroke-width="2" fill="none" stroke-linecap="round"/>
-  ${front}${extra}</g></svg>`;
+const INK="#1B2240";
+/* ögon: mandelform med färgad iris, två glimtar och övre ögonlinje */
+const eye2=(x,y,o)=>{const {iris="#5B3A29",w=6.2,h=7,lash=false,lid=0,sparkle=false}=o||{};
+  return `<g><ellipse cx="${x}" cy="${y}" rx="${w}" ry="${h}" fill="#fff"/>
+  <clipPath id="e${x|0}${y|0}${iris.slice(1)}"><ellipse cx="${x}" cy="${y}" rx="${w}" ry="${h}"/></clipPath>
+  <g clip-path="url(#e${x|0}${y|0}${iris.slice(1)})"><circle cx="${x}" cy="${y+1}" r="${h*.78}" fill="${iris}"/><circle cx="${x}" cy="${y+1}" r="${h*.42}" fill="${INK}"/>
+  ${lid?`<rect x="${x-w-1}" y="${y-h-1}" width="${2*w+2}" height="${lid}" fill="var(--lid)"/>`:""}</g>
+  <circle cx="${x+2}" cy="${y-2}" r="${sparkle?2.4:1.8}" fill="#fff"/><circle cx="${x-2}" cy="${y+3}" r="${sparkle?1.3:.9}" fill="#fff"/>
+  <path d="M${x-w-.5} ${y-(lid?h-lid:1)} Q${x} ${y-h-2.2+(lid?lid:0)} ${x+w+.5} ${y-(lid?h-lid:1)}" stroke="${INK}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  ${lash?(()=>{const d=x<50?-1:1;return `<path d="M${x+d*w} ${y-2} l${d*3.6} -2.6 M${x+d*(w-2.2)} ${y-5} l${d*2.6} -3.2" stroke="${INK}" stroke-width="1.8" stroke-linecap="round"/>`})():""}</g>`};
+const eyesL=(o)=>`<g class="eyes">${eye2(39,53,o)}${eye2(61,53,{...o,flip:1})}</g>`;
+const blush=(c="#FF7E9D",o=.45)=>`<ellipse cx="32" cy="62" rx="5.5" ry="3.2" fill="${c}" opacity="${o}"/><ellipse cx="68" cy="62" rx="5.5" ry="3.2" fill="${c}" opacity="${o}"/>`;
+const grad=(id,a,b,x2=0,y2=1)=>`<linearGradient id="${id}" x1="0" y1="0" x2="${x2}" y2="${y2}"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`;
+/* gemensam kropp: bakgrund, hår bakom, axlar, hals, öron, huvud – resten per person */
+const face=(k,{bg,bg2,skin="#F6CFAE",skin2="#E3A985",lid="#F0BE9C",defs="",deco="",back="",shirt,top,feat,front=""})=>`<svg viewBox="0 0 100 100" aria-hidden="true" style="--lid:${lid}">
+  <defs><clipPath id="av-${k}"><circle cx="50" cy="50" r="48"/></clipPath>${grad("bg-"+k,bg,bg2,1,1)}${defs}</defs><g clip-path="url(#av-${k})">
+  <circle cx="50" cy="50" r="48" fill="url(#bg-${k})"/>${deco}${back}
+  <path d="M42 66 h16 v14 q-8 6 -16 0Z" fill="${skin2}"/>
+  ${shirt}
+  <ellipse cx="25" cy="55" rx="4.2" ry="6" fill="${skin2}"/><ellipse cx="75" cy="55" rx="4.2" ry="6" fill="${skin2}"/>
+  <path d="M24 50 Q24 24 50 24 Q76 24 76 50 Q76 66 66 74 Q58 80 50 80 Q42 80 34 74 Q24 66 24 50Z" fill="${skin}"/>
+  <path d="M48.5 57 q-1.5 4 2 4.5" stroke="${skin2}" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  ${feat}${top}${front}</g></svg>`;
+
 const AVATARS={
-  /* Lily: tofsar med en blå och en röd rosett */
-  lily:face("lily","#FFE7A8","#FF6FA0",
-    `<circle cx="17" cy="58" r="12" fill="#B4562C"/><circle cx="83" cy="58" r="12" fill="#B4562C"/><circle cx="14" cy="72" r="8" fill="#B4562C"/><circle cx="86" cy="72" r="8" fill="#B4562C"/>`,
-    `<path d="M24 50 Q22 20 50 20 Q78 20 76 50 Q74 40 70 36 Q66 42 60 38 Q56 44 50 39 Q44 44 40 38 Q34 42 30 36 Q26 40 24 50Z" fill="#B4562C"/>
-     <path d="M18 44 L7 36 L7 52Z M18 44 L29 36 L29 52Z" fill="#2F5BFF"/><circle cx="18" cy="44" r="3.4" fill="#1F44D6"/>
-     <path d="M82 44 L71 36 L71 52Z M82 44 L93 36 L93 52Z" fill="#E3313F"/><circle cx="82" cy="44" r="3.4" fill="#B71C2C"/>
-     ${eyes(53,10,true)}<path d="M36 44 q4 -2 8 0 M56 44 q4 -2 8 0" stroke="#8A3E1D" stroke-width="1.6" fill="none" stroke-linecap="round"/>${cheeks(63)}`,
-    `<path d="M41 66 Q50 75 59 66 Q50 70 41 66Z" fill="#C2185B"/>`),
-  /* Filippa: långt hår, solglasögon i håret, sjal och örhängen */
-  filippa:face("filippa","#D9E4FF","#2F5BFF",
-    `<path d="M22 46 Q20 18 50 17 Q80 18 78 46 L82 90 Q50 98 18 90Z" fill="#C9963B"/>`,
-    `<path d="M24 52 Q22 22 50 21 Q78 22 76 52 Q72 36 62 31 Q50 42 30 38 Q26 44 24 52Z" fill="#D9A441"/>
-     <rect x="31" y="25" width="16" height="9" rx="4.5" fill="${INK}"/><rect x="53" y="25" width="16" height="9" rx="4.5" fill="${INK}"/><path d="M47 29 h6" stroke="${INK}" stroke-width="2.4"/>
-     <rect x="34" y="27" width="5" height="2" rx="1" fill="#fff" opacity=".55"/><rect x="56" y="27" width="5" height="2" rx="1" fill="#fff" opacity=".55"/>
-     ${eyes(52,10)}<path d="M35 46 q5 -3 9 -.5 M56 45.5 q5 -2.5 9 .5" stroke="#6B4A1E" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-     <path d="M36 50 l-3 -2 M64 50 l3 -2" stroke="${INK}" stroke-width="1.3" stroke-linecap="round"/>${cheeks(62)}`,
-    `<path d="M42 66 Q50 73 58 66 Q50 68.5 42 66Z" fill="#D7263D"/>
-     <circle cx="24" cy="62" r="2.6" fill="#F5B400"/><circle cx="76" cy="62" r="2.6" fill="#F5B400"/>
-     <path d="M30 84 Q50 96 70 84 L66 79 Q50 88 34 79Z" fill="#FF4D5A"/><path d="M60 86 l9 13 l-7 2 l-6 -13Z" fill="#E33A48"/>`),
-  /* Lukas: rufsigt hår, hörlurar och fräknar */
-  lukas:face("lukas","#FFD9C2","#1FA55B","",
-    `<path d="M24 48 Q22 22 50 21 Q78 22 76 48 Q72 38 66 35 L64 40 L58 33 L54 39 L48 32 L44 38 L38 33 L36 40 Q28 40 24 48Z" fill="#6B3E26"/>
-     <path d="M40 22 l4 -8 l4 7 l5 -9 l3 9 l6 -6 l-1 8Z" fill="#6B3E26"/>
-     <path d="M21 54 Q19 22 50 20 Q81 22 79 54" stroke="${INK}" stroke-width="4" fill="none"/>
-     <rect x="15" y="46" width="11" height="18" rx="5" fill="#2F5BFF"/><rect x="74" y="46" width="11" height="18" rx="5" fill="#2F5BFF"/>
-     ${eyes(52,10)}<path d="M35 44 l9 1 M56 45 l9 -1" stroke="#5A3220" stroke-width="2.4" stroke-linecap="round"/>
-     <g fill="#C9875E"><circle cx="35" cy="60" r="1.2"/><circle cx="39" cy="62" r="1.2"/><circle cx="34" cy="63.5" r="1.2"/><circle cx="65" cy="60" r="1.2"/><circle cx="61" cy="62" r="1.2"/><circle cx="66" cy="63.5" r="1.2"/></g>`,
-    `<path d="M40 66 Q51 76 61 65" stroke="${INK}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-     <path d="M42 82 L50 90 L58 82" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>`),
-  /* Johan: glasögon, skäggstubb och ett glas rött */
-  johan:face("johan","#E4DCFF","#2B3A67","",
-    `<path d="M29 60 Q31 80 50 80 Q69 80 71 60 Q66 72 50 72 Q34 72 29 60Z" fill="#8C6A4A" opacity=".3"/>
-     <path d="M24 48 Q22 20 50 20 Q78 20 76 48 Q73 34 60 31 Q50 37 36 32 Q28 38 24 48Z" fill="#A47B4F"/>
-     <g fill="none" stroke="${INK}" stroke-width="2.4"><circle cx="40" cy="52" r="8"/><circle cx="60" cy="52" r="8"/><path d="M48 51 h4 M32 51 l-7 -2 M68 51 l7 -2"/></g>
-     ${eyes(52,10)}<path d="M33 41 l9 -1 M58 40 l9 1" stroke="#7A5A38" stroke-width="2.4" stroke-linecap="round"/>${cheeks(63)}`,
-    `<path d="M41 66 Q50 74 59 66" stroke="${INK}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-     <path d="M44 81 L50 88 L56 81" fill="#fff"/>
-     <g transform="translate(77 70) rotate(10)"><path d="M-7 0 Q-7 12 0 12 Q7 12 7 0Z" fill="#8E1B3A"/><path d="M-7 0 Q-7 12 0 12 Q7 12 7 0 M0 12 v10 M-5 22 h10" stroke="#fff" stroke-width="1.6" fill="none"/></g>`)
+  /* Lily, 9: gullig och cool – space buns med stjärnspännen, hjärtsolglasögon i håret, glittrande ögon, hoodie */
+  lily:face("lily",{bg:"#FFB3D9",bg2:"#B79BFF",
+    defs:grad("hair-lily","#C8693A","#8E3F1E")+grad("hood-lily","#7C5CFF","#5B3FE0"),
+    deco:`<g fill="#fff" opacity=".85"><path d="M14 22 l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6Z"/><path d="M86 70 l1.2 3 3 1.2 -3 1.2 -1.2 3 -1.2 -3 -3 -1.2 3 -1.2Z"/><circle cx="84" cy="24" r="1.6"/><circle cx="12" cy="74" r="1.3"/></g>`,
+    back:`<circle cx="26" cy="22" r="12" fill="url(#hair-lily)"/><circle cx="74" cy="22" r="12" fill="url(#hair-lily)"/>
+      <path d="M22 54 Q20 26 50 25 Q80 26 78 54 L80 72 Q76 76 72 70 L28 70 Q24 76 20 72Z" fill="url(#hair-lily)"/>`,
+    shirt:`<path d="M12 104 Q13 82 34 78 Q42 84 50 84 Q58 84 66 78 Q87 82 88 104Z" fill="url(#hood-lily)"/>
+      <path d="M34 78 Q42 88 50 88 Q58 88 66 78" stroke="#B9A6FF" stroke-width="3" fill="none"/><path d="M44 88 v8 M56 88 v8" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M50 94 l1.3 2.6 2.9.4 -2.1 2 .5 2.9 -2.6 -1.4 -2.6 1.4 .5 -2.9 -2.1 -2 2.9 -.4Z" fill="#FFD84D"/>`,
+    feat:`${eyesL({iris:"#6B4226",w:6.6,h:7.6,sparkle:true})}<path d="M33 42.5 Q38.5 39.5 44 41.5 M56 41.5 Q61.5 39.5 67 42.5" stroke="#9A4A22" stroke-width="2" fill="none" stroke-linecap="round"/>${blush("#FF6F9F",.55)}
+      <path d="M43 66 Q50 72 57 66" stroke="${INK}" stroke-width="2.2" fill="#fff" stroke-linecap="round"/><path d="M47 68.4 Q50 71 53 68.4" fill="#FF8FA8"/>`,
+    top:`<path d="M24 50 Q24 26 50 26 Q76 26 76 50 Q74 38 66 34 Q64 42 56 41 Q58 36 54 33 Q48 42 38 40 Q40 36 38 34 Q28 38 24 50Z" fill="url(#hair-lily)"/>
+      <path d="M32 33 Q42 28 52 30" stroke="#E08A55" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/>
+      <path d="M36 27 c-3 -4 -9 -2 -8 3 c1 4 8 6 8 6 c0 0 7 -2 8 -6 c1 -5 -5 -7 -8 -3Z" fill="#FF3E8E" transform="translate(-4 -2) rotate(-12 36 30)"/>
+      <path d="M64 27 c-3 -4 -9 -2 -8 3 c1 4 8 6 8 6 c0 0 7 -2 8 -6 c1 -5 -5 -7 -8 -3Z" fill="#FF3E8E" transform="translate(2 -3) rotate(12 64 30)"/>
+      <path d="M38 29 Q50 25 60 28" stroke="#FF3E8E" stroke-width="1.8" fill="none"/>
+      <path d="M33 26 l1.5 1" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/><path d="M63 25 l1.5 1" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M17 18 l1.6 3.2 3.5.5 -2.5 2.5 .6 3.5 -3.2 -1.7 -3.2 1.7 .6 -3.5 -2.5 -2.5 3.5 -.5Z" fill="#FFD84D"/>
+      <path d="M83 18 l1.6 3.2 3.5.5 -2.5 2.5 .6 3.5 -3.2 -1.7 -3.2 1.7 .6 -3.5 -2.5 -2.5 3.5 -.5Z" fill="#7CE0FF"/>`}),
+
+  /* Lukas, 12: seglare och gamer – gamingheadset med mikrofon, svepande lugg, segelbåt i bakgrunden */
+  lukas:face("lukas",{bg:"#7FD4FF",bg2:"#2A6FDB",
+    defs:grad("hair-lukas","#4A2C1C","#2B180F")+grad("sea-lukas","#1E88E5","#0D47A1"),
+    deco:`<path d="M0 74 Q12 70 24 74 T48 74 T72 74 T100 74 V100 H0Z" fill="url(#sea-lukas)"/>
+      <path d="M6 76 q6 -3 12 0 M78 77 q6 -3 12 0" stroke="#BDE7FF" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      <g transform="translate(80 40)"><path d="M0 -24 L0 8 L-14 8Z" fill="#fff"/><path d="M2 -20 L2 8 L13 8Z" fill="#FFD84D"/><path d="M-16 10 h30 l-4 6 h-22Z" fill="#E3313F"/></g>
+      <circle cx="16" cy="20" r="6" fill="#FFE27A" opacity=".9"/>`,
+    shirt:`<path d="M12 104 Q13 82 34 78 Q42 83 50 83 Q58 83 66 78 Q87 82 88 104Z" fill="#14213D"/>
+      <path d="M34 78 Q42 86 50 86 Q58 86 66 78" stroke="#2EC4B6" stroke-width="3" fill="none"/>
+      <g transform="translate(50 94)" fill="none" stroke="#2EC4B6" stroke-width="2" stroke-linecap="round"><path d="M0 -6 v10 M-4 -2 h8 M-5 2 q5 5 10 0"/><circle cy="-7" r="1.6"/></g>`,
+    feat:`${eyesL({iris:"#3E7C59",w:6,h:6.6,lid:2.6})}
+      <path d="M33 44 l10 -1.5 M57 42.5 l10 1.5" stroke="#3A2214" stroke-width="2.8" stroke-linecap="round"/>
+      <g fill="#C98B62" opacity=".8"><circle cx="34" cy="61" r="1"/><circle cx="37.5" cy="62.6" r="1"/><circle cx="66" cy="61" r="1"/><circle cx="62.5" cy="62.6" r="1"/></g>
+      <path d="M43 67 Q50 70 58 65" stroke="${INK}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+    top:`<path d="M24 52 Q20 22 48 21 Q72 20 77 44 Q74 36 68 34 Q56 40 40 36 Q32 40 30 48 Q27 46 24 52Z" fill="url(#hair-lukas)"/>
+      <path d="M36 23 Q56 14 70 26 Q62 24 56 26 Q66 30 64 38 Q56 30 46 32 Q50 28 44 26 Q40 30 30 34Z" fill="url(#hair-lukas)"/>
+      <path d="M44 24 Q54 20 62 24" stroke="#6E4630" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <path d="M21 54 Q18 20 50 18 Q82 20 79 54" stroke="#222B45" stroke-width="5" fill="none"/>
+      <path d="M21 54 Q18 20 50 18 Q82 20 79 54" stroke="#2EC4B6" stroke-width="1.4" fill="none" stroke-dasharray="3 5"/>
+      <rect x="13" y="45" width="13" height="20" rx="6" fill="#222B45"/><rect x="74" y="45" width="13" height="20" rx="6" fill="#222B45"/>
+      <rect x="15.5" y="49" width="3" height="12" rx="1.5" fill="#2EC4B6"/><rect x="81.5" y="49" width="3" height="12" rx="1.5" fill="#2EC4B6"/>
+      <path d="M20 63 Q22 74 36 72" stroke="#222B45" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="37" cy="72" r="2.6" fill="#2EC4B6"/>`}),
+
+  /* Filippa: fashion – stora solglasögon, vågigt hår, guldringar, rött läppstift, trenchkrage */
+  filippa:face("filippa",{bg:"#FFE3D3",bg2:"#F7B7C9",lid:"#EFB996",
+    defs:grad("hair-filippa","#E6B866","#B07F35")+grad("lens-filippa","#3A2A3F","#121025",1,1),
+    deco:`<circle cx="18" cy="24" r="9" fill="#fff" opacity=".45"/><circle cx="84" cy="78" r="12" fill="#fff" opacity=".35"/>`,
+    back:`<path d="M20 48 Q18 18 50 17 Q82 18 80 48 Q86 66 78 82 Q84 90 74 94 L26 94 Q16 90 22 82 Q14 66 20 48Z" fill="url(#hair-filippa)"/>`,
+    shirt:`<path d="M10 104 Q12 82 33 77 L50 92 L67 77 Q88 82 90 104Z" fill="#C8A27A"/>
+      <path d="M33 77 L42 98 L50 92Z M67 77 L58 98 L50 92Z" fill="#A9845E"/><path d="M42 80 L50 92 L58 80" fill="#111"/>
+      <circle cx="40" cy="99" r="1.6" fill="#6B4E33"/><circle cx="60" cy="99" r="1.6" fill="#6B4E33"/>`,
+    feat:`${eyesL({iris:"#4F6D8F",w:6,h:6.4,lash:true,lid:2})}${blush("#FF8A80",.4)}
+      <path d="M33.5 45.5 Q39 42 45 44 M55 44 Q61 42 66.5 45.5" stroke="#7A5428" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M42.5 66.5 Q46 64.5 50 66 Q54 64.5 57.5 66.5 Q54 71.5 50 71.5 Q46 71.5 42.5 66.5Z" fill="#D7193E"/><path d="M44 66.6 Q50 68 56 66.6" stroke="#9E0F2B" stroke-width="1" fill="none"/>
+      <circle cx="24" cy="64" r="3.6" fill="none" stroke="#F5B400" stroke-width="1.8"/><circle cx="76" cy="64" r="3.6" fill="none" stroke="#F5B400" stroke-width="1.8"/>`,
+    top:`<path d="M24 52 Q22 22 50 21 Q78 22 76 52 Q74 34 58 30 Q50 40 34 38 Q28 42 24 52Z" fill="url(#hair-filippa)"/>
+      <path d="M56 30 Q70 32 74 46" stroke="#F4D08A" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <g transform="translate(0 -3)"><path d="M28 31 Q28 25 35 25 L45 25 Q48 25 48 29 Q48 36 40 36 L34 36 Q28 36 28 31Z" fill="url(#lens-filippa)"/>
+      <path d="M52 29 Q52 25 55 25 L65 25 Q72 25 72 31 Q72 36 66 36 L60 36 Q52 36 52 29Z" fill="url(#lens-filippa)"/>
+      <path d="M48 28 Q50 26 52 28" stroke="#F5B400" stroke-width="1.8" fill="none"/>
+      <path d="M31 28 l6 0 M55 28 l6 0" stroke="#fff" stroke-width="1.4" opacity=".6" stroke-linecap="round"/></g>`}),
+
+  /* Johan: snygg sidbena, skäggstubb, självsäkert leende och ett glas rött */
+  johan:face("johan",{bg:"#C9B8FF",bg2:"#7A5CFF",
+    defs:grad("hair-johan","#B48A5A","#7C5A35")+grad("wine-johan","#B0123B","#5E0A22"),
+    deco:`<circle cx="20" cy="22" r="7" fill="#fff" opacity=".3"/><circle cx="86" cy="30" r="4" fill="#fff" opacity=".3"/>`,
+    shirt:`<path d="M12 104 Q13 82 34 78 L50 90 L66 78 Q87 82 88 104Z" fill="#1E2A4A"/>
+      <path d="M38 79 L50 90 L62 79 L58 77 L50 84 L42 77Z" fill="#F4F1EA"/>`,
+    feat:`<path d="M27 60 Q30 80 50 81 Q70 80 73 60 Q68 74 50 74 Q32 74 27 60Z" fill="#7A5A3A" opacity=".28"/>
+      <path d="M42 70 Q50 73 58 70" stroke="#7A5A3A" stroke-width="2" opacity=".35" fill="none"/>
+      ${eyesL({iris:"#4C7FA8",w:5.8,h:6.2,lid:1.6})}
+      <path d="M32.5 44 Q38 41 45 43 M55 43 Q62 41 67.5 44" stroke="#6E4E2C" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <path d="M42 65.5 Q50 72.5 59 64" stroke="${INK}" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M44.5 66.6 Q50 70 56.5 66" fill="#fff"/>`,
+    top:`<path d="M24 52 Q21 24 46 20 Q72 17 77 46 Q75 38 70 35 Q68 32 62 32 Q50 33 42 30 Q36 34 31 37 Q26 42 24 52Z" fill="url(#hair-johan)"/>
+      <path d="M40 31 Q42 18 56 16 Q72 15 76 28 Q72 25 66 25 Q70 29 68 34 Q62 26 52 27 Q46 27 40 31Z" fill="url(#hair-johan)"/>
+      <path d="M44 26 Q52 19 64 20 M48 29 Q56 23 66 25" stroke="#D7B488" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".9"/>
+      <path d="M38 31 L42 22" stroke="#6A4A2A" stroke-width="1.4" stroke-linecap="round" opacity=".7"/>
+      <path d="M24 52 Q25 44 28 41 M76 46 Q74 41 72 39" stroke="#7C5A35" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+    front:`<g transform="translate(79 70) rotate(8)"><path d="M-8 -2 Q-8 12 0 12 Q8 12 8 -2Z" fill="#fff" opacity=".35"/><path d="M-7.2 3 Q-6.5 11 0 11 Q6.5 11 7.2 3Z" fill="url(#wine-johan)"/>
+      <path d="M-8 -2 Q-8 12 0 12 Q8 12 8 -2 M0 12 v11 M-6 23 h12" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/></g>`})
 };
 const avatar=k=>AVATARS[k]||"";
 
@@ -713,7 +765,7 @@ function doneView(){
     </div>
   </div>`;
 }
-const APP_VERSION="2026-10-25 11:35";
+const APP_VERSION="2026-10-25 11:50";
 function resetAll(){
   if(!confirm("Börja om från början?\n\nAlla stjärnor, valt språk och vald person raderas för alla på den här enheten.")) return;
   try{Object.keys(localStorage).filter(k=>k.startsWith("sprakresa:")).forEach(k=>localStorage.removeItem(k))}catch(e){}
