@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Språkresa">
+<meta name="theme-color" content="#EEF3FB">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAATwElEQVR4nO2deZRU1Z3Hv797X63d1QtNs0gHXHBFgo5H0biMxtHoQNRI1JjEqKPRUZNoPFFx4nEdZ3RMnOjEEDUaddwSoyQRdGaUo0cNDiJRQSESEXEEFei9qmt5797f/PGqoBu6qKXrVb3uup/DH1RXvXrv1vu8u9/fpVnfYhgMg5Cseix5eufzVq2vxOAvJKsuS57ZuehHG28Vtb4Yg49wzTijc9H8T27KUNDkHIYsg81IiAYGmZzDAAwx4+YB0cAgAhs5DDuYEXXNAGDkqHfymQEjR52zCzNg5Khndm0GjBx1S0EzYOSoT4oxA0aOOqRIM2DkqDeKNwNGjrqiJDNg5KgfSjUDRo46oQwzYOSoB8ozA0aOMU/ZZsDIMbYZiRkwcoxhRmgGjBxjlZGbASPHmKQiZsDIMfaolBkwcowxKmgGjBxjicqaASPHmKHiZsDIMTbwwgwYOcYAHpkBI8doxzszYOQY1XhqBowcoxevzYCRY5RSBTNg5BiNVMcMGDlGHVUzA0aO0UU1zQDgr/gcBBABBCJQrS+majAABgPM4Pz3uspmwCdyEEEQANgKdgaOgtLQdROrjABLQggEAwhIkIDWO1pSfTNQczkEgQRsG30pABjXhOkdaI1h32loaqjtpVUPR+HdD9EXx4ZPsbUXGRvRMMJBAFAaqJEZqKEcbm4xkELKxoRWzDkSsw/EoQdgUhtkvVaEuvvwzgf431VY8iY+3AhBiEUhoDplDcwAQDUJNSklbBvxFGZNx6nH4KQjMKlt+7uaC5S+Ywy3piUGPRKJJJa8iT++gj+9rROWOHvg+Ws23FBlM1ATOSyJnjhaY7jibJx5PAIWAGgNBoRbG63yBfkG5mxNK5d36iUrxdK7X714ycV220QNQVpV83qqKgcRAPT044TD8ON/wLRJAKAUhMi+ZXBxLRFgEkDflu57Hut/5DciYCEYhNZVu4zqyUEEzUhncPlZuGQeAChdv9WLItEaEBBA8n9e6rrxNt3XT5EIVJXyjyrdHCIwYyCJf7kEl8zLtlSNGQURAoIZjhM58bj2X90tYjFOJiFllc5ehXO4RUYihdu/h9OPg+1AimzHhqEwRLAsOE7wgH3bH7hbxGKcSg+pvnpGleToS+C2S3H6cXBUtgZqKA3LglKuHxQKsuNUoZrmuRyWRE8/zjkZ874MR8GqUo44FpHSzT9ab7iaB5KjXg4hkEhiv91xzXdM9bMSWBYcp+GrJzWePlf39Hr9qHl7u5gBwo0XIhLKDaoZRoiU0Lrl6sutqVM4lfb0N/VQDinRG8cZx+OwGXBUdapQdQARmMW4lpYrL+NkytOf1cOvVgqNUZw/F8ymbVJRpITWka98Obj/Pp5WPrySQwrEk5g9A7tPBrPJNioNMwUC0TkncirlXVXO25s277hs95ehwggBIDrnRDl+HGyvmrWeyEGEtI1JbThqFgCTbXgAEbS2OnYLHjRTe1ayeCVHKo1D9kNDBFqbRoo3MAMIH3k4lBpNcgiCo3HQ3tnBNoMnEAEIzZpBoaBHv7IncmhGwMI+UwGYdopnEAGQUztkSwu86U33So5wEK1NXny3YRDMIhym5hh7M4hfeTmI4DhobcK0idmXBk8gAjNFwta0L7Btj5qcA4NmvBk8x7O5YaaVaciLkcOQFyOHIS9GDkNejByGvBg5DHkxchjyMgpmgrvxCLJ9PATWAEGICq6aZLByl6xmX4IBAarckzMkDdkxM/8v9PO1HO6I7o4j/rlJtZWYscxgDZKg4X4H15gRKjJ8GnIoVbUVSmXgXzm23fu312LpKqz8K5QGM/b+Ag49AMccBMuC5hHMW2YNEiDJ6c/V5ud15ys6uYEIsFrkuKPFhJNE434AwApU7v3L3fvMO++mlr6RWbmatQJzYPqeoUMPDh99BI00Dd5S+bWyRLAdtDbhuTsRaxiSmxaPe9Sy93DfQixdiVRm+yx8pSEIM/bCeXPwtWO3f7jEE2iQYKfPWXens+GXeuBzANsLKg0Khqwp3wzsPZ8a9inTD2YQpd9Y0Xf/I6mlb3AqDUu6FrBSECI4Y7/Yud9oOG1OuWkAtIYQWy7+YfLlP4lYY8X70f2Yc2gNIbDgGdz1JJRCLIqGCJizgSmIAMbaj3HFv+O1d3DDBaUryBokdN9bmbcuVJ1/piAoKAHC9tAXBE7b63/tfPbH0KxfyMlnluyH1hCi75e/7r37PlZKxBpFQ5RzaSAiAPbadZ1XXpd6bVnr9VeJWGOZfniJ7+RwS5OfPoafPo5JbSBAaewcliISRGMEv30Rm7vx8PXZPxb127pmDHyYXnq8TndTJADtgHce8iYKSTidqWVnhQ+XctK8EvxQGlL03HlP750L5KQJRASleKenmiJhaowmnvqD2rJ1woM/z+ZbfvLDX01Z14wly7HgGUweD+ZsUKyd0QzbwaQ2vPoW7nwCQhQ5jZkBQGcyb31Tp7spaEHbGD5WDoMdCEmWyLz9XT2wDiSw8x3Ok4bkklf67n1ITp4I5rwRE7SG7YhJE1Kvvt5z14Li01A1/CWHIGRs/OxJWKKoyE+2QksMDy/GR5sgRBFlLmuQcDY9oTYvo6AF7RT6vIIQOtnt/PXmoeXOrtLAGbv37ntJWsWlwRYtzfGHn3Q++ri4NFQPH8nhzpN94Q28tx6N0eJ+JYYlkUjiocUAinnwBHTaWXc7JBV7G1hRUKiNv9GJtSAJ7PIopUCUfOHlzOq/ULFpACypEwP9jzwJFJWGquEjOdxC94VloFJ+IqURCeG1lUilIeUuD2QFIt3/ru77C1kocJsHHQYSOp1Wm58DUKhkIQADL74MKqWMUFpEIqnXlnHhNFQVv8jBDCkwkMLqjxAuZTY1M4IBfLYV6z7JvtzFZwGorldY8fautOJOAkG682UA2EXHLDOk4IGkveZ9EQqVmgb12Wf2uvXZl/7AL3K4KIWBVMkVdrdnJZEq7tNOT1nBGhlOj3u2Ap9Tqpz1q0RsO5wYKOPKvMNfcmzrzCjnwCKPLPu5LPLAskOo+i/2ql/kcJfUhoJoa8rbfM2H1ohG0N5a3Iki00Aoqt0x6CAwUWQqsMsD3engoZBoG1fyWgGtKRoV7eNLO8pj/CIHAK0RCmLW3khlSlheS4R0BlMnYuqkQsv5SQAQ446hgFVUj8V2GGDRfkLu//nRmkLB4KwZnC4lphsRpzPW1A5raoevQhL45TqQ6xs85WgEAyU82FIgZePvvwRLFmw5CrAW0b1k29HsoOjucIJmER0v208GCh1FBKBh7klUYho4nY6e/HdURBqqiY/kcHuADj0AR81CT7yoeFdESGUwuQ3fOKHIR45Bwtr7enIDUhV1WRZntLXHZRRsz037KJCG0KEHh4+crXv6ik+DnDSh8azTfZVtwFdyuDDj6m+jqRFpu8B0DXeaRCKJa76Dllhx41YkwUq2HWvteT6nHYhAgc8LizO2HD/T2uOH2SH+4tLQctX3RXOMi0uDTiRarv6BaGny29ibv+Rwhxf2nYZbLkIyjZQNSw7zc7m71zBjcxcuPBWnHgOli37kSIB1YMZ/yPbDOGWDJEgOkx+QAFmccUSoLXjwY2Q1585cVBoC+0wfd+N8TiY5lYFlDZcGctOgN2+NXfDthlNOLiUNVcJfVwNACCiNuUfhP29Eewu29sJ2IASkhCVhSUgBxejuh9b410vx4/NLnRJGICLZEDr8hcCeF3JGsa0Azs4Hc/+B4GhOO3L8keFjXhexmSVkG7k0ROd+ZcIjv5DtbXprJ9v29jRICSmhlO7uhdbjbr2u9Z+u9GcgTt8N2QOQAlrjiJlYeDse/288/RI2bkHGBufyjNYmnHI0zp+LvTqyXaslQgCT1RScdb/c7Uxn3R2q8yXOOLkJIyAJ0fxFa8/LrY5zQIHSzBiUhvDhh056+uH4E0/Hn1mkNm7ijJ1915KytbXxqyfFzjs7sNce5aWhCvh0JhhyU34ADKSw6gOs/GD7NMGZ0zFx3JDPlAWD2b3rOr5Gdy/jgQ0gkNUixn1JNP9NtmFShhk7pYEHBtKr1mRWrYbKThMMzjxATmwfaRrqcCaYi1v/0IxoGLMPxOwDh7yrc3PQRwCBCKxAQjTuLxr33/F9VqCRzUHPpkFTNBqefUh49iFD3nXvpc/qGYPxrxwAiCAp2628bRjL3RyuYj/ptuxhyCAtuXOPK/H9lB1ozf7Lfj2E8LMWLr6Ww4UIRB7XnEl4Wzd30zDa8Lu8hhpi5DDkxchhyIuRw5AXI4chL0YOQ148lGMUtt1GJ6NuvxXNcKq6tXa9wuxRbGt4IQczAgF09eCjT7MvDZ7ADCF0MmWv/1gEAl780N7smgA4Cl19QIkTeQ2lwv1xHhjwaFDXq/1WbIXV/lqhM+ZgBuCs36C7e2BZoybn0IyghTfXQGuzpYZnMANIvbGCnVG1GQ8zwiG8tx6dvT4MLDBWEAKaU8tWwJsKB7yTI2hhaw/+63UAJS9SMhRGa4Aya963V74nohGPFjR42JQNWfj9K1Bmu2EvYAYhsXCR9nLfYc/k0IhG8O46vLUWgkzmUVHcRmxvX/LFl0W06CggpePtQ60ZC54GYFq0FUVrEMUfe8r5v00IB72r03koh9ZoasBLK/DbF925+N6dqp7QGlLa73/Qd9/DornJ035oj3MOjcYI/u1RbNzst3hXoxN3IqrSXTfexqm01wsavP12ZgQs9MVxzT25uOKmfBkJSkHKnp8tSC9/i2KNXlflPG9IKI1YA5auxE0PuC1z40e5OAqWlVi4qP/+R0RzUxXK6WrMPlcKrU148FkAuOFCaA02mxGXhBvM1LISCxd1zb+ZGqLVOW2VuiCUQnsLHnwWN/0KQpjGbSm4NTXLSjyTM8MNg+Q91Vu34iiMb8Yjz2HTFtx6Cca35FatmSwkH8xu2wRa9/zk5/0PPlZNM1DlaYJKoyWGJcsxbz6eX5rNQrSG0qYfZChaZ2P2SplZtfrzb13Ud+9DFI1U0wx4sZC6IFIinUEqg9P+Fv94OqZ3ZP/uFjREvt1+xEvcW64Z4G07OOnO7v4nftf/wKOcTFFTY/Wn1tVADuRWB/bG0dyII7+Irx2Lo2YhODTMjlvowItASL4L6rhj4Zp5593E759LvvSq88km0RSDFDWpo9VGDhcp4KhscNn9d8dB++DogzC9A23NaG707Kw+C63kouMJjsftDzekl61IL/9zetUaTiYpGqVQsIZdy7WUw8Xt5RtIww1t0tKISAjTJiMahiAk07j2XOy/xwhDceRQClLq/nj3jbfp3v5s8Kiao7T94UecTOnubnYUBQIUjWR7lGt6ebVfZe/ml5EgoiEAcBR643hzTXazlXAom4tU4GnPmbHloitSry8XkTAXH57cSwhAKEhCUGMjuVVOt0Jaa2ovh4tbFQMgCMJCIJDde2VCG1pjlTiBUpDSXvtB17W3pFetlhMnQCkflS7ZCqm/On/8Isc2GNl4TBBIZTClHeHQiMsUx4FlZVa/v+WC76vuHtHSDNsufFTd4+tJWlqjvRlEI+sFcVTOjB/o/rhoaoJTaIMmAwA/yyEISuk9O4CRjOUqBUumXl++5buX675+ikSMGcXjXznA2gmIjnZG2bVRx4GUiYWLt5x3mY4nKBL2Qy1vFOFTOSSrLkuc3fXUnOhyBmSxW24NYvsw5k3UEKVAwG/VPf/jRzkkq+6A/Ppnz14bvwtTphJKzDrcRrCUid/9oeva3DCmMaN0fNdakay6LHlG5+JrNlyfnLx7U3NLace7XeNSdP/zT/ofekI0N2X/aCgdf+UcOTMWzd94S0IF5NQOGQm5k62LOt41Q4juW+7of+BR0dqS/aOhLHwkx3YzPrl5QDawhtXWWkJD1h00EaL75jv6H3xctI93Y0l7e9FjGr8UK0PMEFEmIscO7Lk7UNyjrzWE0P3xzh9dn3zpFTF+nGmyjhxfyLGjGSBiDcuSUyYDRdRGBw2apJetEOPbjBkVofbFyjBmgMGAFNaU3YBCO+C4ZsQTWy66Iv3m26LdmFExaizH8GYQwXFES7NVMOfIDadtOffS9Ip3RGsLbGNGxahlsTK8GS5Ki2iUmnY5ILvzcJrJMypKzXKOXZlBpG1bTu0QkXDedqwZTvOe2sixKzNctJbjx+Vtx5rhtKpQAzkKmyEIjpO3HWuG06pFteschc0AwEz52rE7rAo0S/e9pKpyFGUGMHw71t3Kyx1Ou+5WM5xWBaonR7FmDNuONcNptaBKdY5izXDZoR1rhtNqRDXkKM2MHdqxDDOcVis8L1ZKM8NlWzvWcRAImOG0WuGtHOWY4bZj99oDWsOyzHBaDfGwWCnHDADMFLDkhHYIoeNxM5xWQ7ySo0wz4K5o4uCM/Zz1Gzafc4kZTqshnshRvhlEnMlYU3ZzPv1s8/nfy6x+3wyn1ZDKr7Iv3wwXrd2AaLqnjxoiZjOwGlLhCulIzQAgBCcGAFAkbMyoLZWUowJmuLhxj0zXeK2pWJ2jYma4mG4uH1AZOSpshsEfVEAOY8ZYZaRyGDPGMCOSw5gxtilfDmPGmKdMOYwZ9UA5chgz6oSS5TBm1A+lyWHMqCtKkMOYUW8UK4cxow4pSg5jRn1SWA5jRt1SQA5jRj2zKzmMGXVOXjmMGYbh5TBmGDCsHMYMg8uOchgzDNsYIocxwzCY7XIYMww7kJXDmGHYGQFjhiEPQrLqCsivdy42Zhh2wOq15BlbFl278aaEaDBmGAYjTutcfNXGW02eYdiZ/wc+22luWlwQ4QAAAABJRU5ErkJggg==">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Familjens språkresa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Layout: en kolumn, telefon först. En person i taget, ett kort i taget. Accentfärgen följer språket. */
+:root{
+  --bg:#EEF3FB; --surface:#FFFFFF; --ink:#1B2240; --muted:#5E6788; --line:#D5DDF0; --soft:#F5F8FE;
+  --good:#1FA55B; --good-bg:#DDF6E7; --bad:#E0354A; --bad-bg:#FDE3E6;
+  --fr:#2F5BFF; --fr2:#FF4D5A; --es:#E3313F; --es2:#F5B400;
+  --accent:var(--fr); --accent2:var(--fr2);
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  --r:22px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11152A; --surface:#1C2242; --ink:#EEF1FF; --muted:#A3ABCC; --line:#2E3660; --soft:#232A50;
+  --good:#3DDC84; --good-bg:#173A2A; --bad:#FF6B7D; --bad-bg:#43202A;
+  --fr:#6F8CFF; --fr2:#FF6B76; --es:#FF5A66; --es2:#FFCB3D; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#11152A; --surface:#1C2242; --ink:#EEF1FF; --muted:#A3ABCC; --line:#2E3660; --soft:#232A50;
+  --good:#3DDC84; --good-bg:#173A2A; --bad:#FF6B7D; --bad-bg:#43202A;
+  --fr:#6F8CFF; --fr2:#FF6B76; --es:#FF5A66; --es2:#FFCB3D; color-scheme:dark }
+body[data-lang="es"]{--accent:var(--es); --accent2:var(--es2)}
+body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:17px;
+  padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px)); padding-block:12px 40px;}
+*{box-sizing:border-box}
+button{font:inherit; color:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent}
+button:focus-visible{outline:3px solid var(--accent); outline-offset:3px}
+.wrap{max-width:560px; margin:0 auto; display:flex; flex-direction:column; gap:18px}
+h1,h2,h3,.disp{font-family:var(--display); margin:0; line-height:1.05; text-wrap:balance}
+h1{font-size:32px}
+h1 span{color:var(--accent)}
+h3.group{font-size:15px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-top:4px}
+
+/* topp */
+.top{display:flex; align-items:center; gap:12px; min-height:64px}
+.top .grow{flex:1; min-width:0}
+.mascot{width:64px; height:64px; flex:none; animation:bob 2.6s ease-in-out infinite}
+.mascot.cheer{animation:hop .6s ease}
+@keyframes bob{50%{transform:translateY(-4px) rotate(-3deg)}}
+@keyframes hop{30%{transform:translateY(-14px) scale(1.08)}60%{transform:translateY(0) scale(.96)}}
+.bubble{background:var(--surface); border:2px solid var(--line); border-radius:16px; padding:8px 12px; font-weight:800; font-size:15px; display:inline-block; max-width:100%}
+.adult{display:flex; align-items:center; gap:10px}
+.adult .pi{font-size:38px}
+.adult b{display:block; font-family:var(--display); font-size:22px; line-height:1}
+.adult small{color:var(--accent); font-weight:800}
+.switch{background:var(--surface); border:2px solid var(--line); border-radius:999px; padding:6px 12px; font-weight:800; font-size:14px; flex:none}
+
+/* vem övar */
+.people{display:flex; flex-direction:column; gap:12px}
+.person{background:var(--surface); border:3px solid var(--line); border-radius:var(--r); padding:16px; display:flex; align-items:center; gap:14px; text-align:left; transition:transform .15s}
+.person:active{transform:scale(.98)}
+.person .pi{font-size:52px; line-height:1}
+.person b{font-family:var(--display); font-size:26px; display:block; line-height:1.1}
+.person small{color:var(--muted); font-weight:700; font-size:15px}
+.person[data-l="fr"]{box-shadow:0 5px 0 var(--fr)} .person[data-l="es"]{box-shadow:0 5px 0 var(--es)} .person[data-l="both"]{box-shadow:0 5px 0 var(--fr), 0 5px 0 var(--es)}
+
+.langs{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.lang{border:3px solid var(--line); background:var(--surface); border-radius:var(--r); padding:12px; display:flex; align-items:center; gap:10px; font-weight:800; font-size:18px; transition:transform .15s}
+.lang .flag{font-size:30px; line-height:1}
+.lang[aria-pressed="true"]{border-color:var(--accent); box-shadow:0 4px 0 var(--accent)}
+
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.cat{background:var(--surface); border:2px solid var(--line); border-radius:var(--r); padding:14px 12px 12px; text-align:left; display:flex; flex-direction:column; gap:4px; min-height:146px; transition:transform .15s; min-width:0}
+.cat:active{transform:scale(.97)}
+.cat .pic{font-size:40px; line-height:1.1}
+.cat .sv{font-family:var(--display); font-size:20px; font-weight:800; line-height:1.1}
+.cat .fx{color:var(--accent); font-weight:800; font-size:14px}
+.stars{margin-top:auto; font-size:16px; letter-spacing:2px; color:var(--line)}
+.stars b{color:var(--es2); font-weight:400}
+
+/* tema-sida */
+.back{background:none; border:none; font-weight:800; color:var(--muted); padding:4px 0; align-self:flex-start; font-size:16px}
+.hero{display:flex; align-items:center; gap:14px}
+.hero .pic{font-size:52px}
+.hero h2{font-size:30px}
+.hero p{margin:2px 0 0; color:var(--accent); font-weight:800}
+.big{border:none; border-radius:var(--r); padding:16px 20px; font-family:var(--display); font-size:23px; font-weight:800; display:flex; align-items:center; gap:14px; text-align:left; box-shadow:0 5px 0 rgba(0,0,0,.18); transition:transform .1s, box-shadow .1s}
+.big:active{transform:translateY(4px); box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.big small{display:block; font-family:var(--body); font-size:15px; font-weight:700; opacity:.85}
+.big .ic{font-size:34px}
+.b1{background:var(--accent); color:#fff}
+.b2{background:var(--accent2); color:#1B2240}
+.preview{display:flex; flex-wrap:wrap; gap:8px}
+.chip{background:var(--surface); border:2px solid var(--line); border-radius:999px; padding:6px 12px; font-weight:700; font-size:15px}
+
+/* grammatikregel */
+.rule{background:var(--surface); border:2px solid var(--line); border-radius:var(--r); padding:16px 18px; line-height:1.55}
+.rule p{margin:0}
+.rule b{color:var(--accent)}
+.conj{width:100%; border-collapse:collapse; margin-top:12px; font-size:17px}
+.conj td{padding:9px 6px; border-top:1px solid var(--line); vertical-align:middle}
+.conj td:first-child{font-weight:800; color:var(--accent)}
+.conj td:last-child{color:var(--muted); text-align:right}
+.conj tr{cursor:pointer}
+.conj tr:active td{background:var(--soft)}
+.hint{font-size:14px; color:var(--muted); margin-top:8px}
+
+/* kort */
+.dots{display:flex; gap:6px; justify-content:center; flex-wrap:wrap}
+.dot{width:10px; height:10px; border-radius:50%; background:var(--line); transition:background .2s, transform .2s}
+.dot.on{background:var(--accent); transform:scale(1.3)}
+.dot.past{background:var(--accent); opacity:.4}
+.card{background:var(--surface); border:3px solid var(--line); border-radius:28px; padding:28px 18px 22px; display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; width:100%; cursor:pointer}
+.card.in{animation:slidein .35s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes slidein{from{transform:translateX(40px) rotate(3deg); opacity:.2}}
+.card .pic{font-size:104px; line-height:1}
+.wiggle{animation:wig .5s}
+@keyframes wig{25%{transform:rotate(-10deg) scale(1.08)}75%{transform:rotate(8deg) scale(1.04)}}
+.word{font-family:var(--display); font-size:44px; font-weight:800; color:var(--accent); line-height:1.08; overflow-wrap:anywhere}
+.word.long{font-size:30px}
+.svw{color:var(--muted); font-weight:800; font-size:19px}
+.swatch{display:inline-block; width:104px; height:104px; border-radius:50%; border:4px solid var(--line)}
+.num{font-family:var(--display); font-weight:800; font-size:104px; line-height:1; color:var(--accent2)}
+.turn{display:flex; align-items:center; justify-content:center; gap:10px; font-family:var(--display); font-size:24px; font-weight:800; color:var(--accent); min-height:44px; text-align:center}
+.ring{width:26px; height:26px; border-radius:50%; background:var(--accent); animation:pulse 1s ease-in-out infinite; flex:none}
+@keyframes pulse{50%{transform:scale(1.4); opacity:.5}}
+.go{width:60px; height:10px; border-radius:99px; background:var(--line); overflow:hidden; flex:none}
+.go i{display:block; height:100%; background:var(--good); animation:fill 1.6s linear forwards}
+@keyframes fill{from{width:0}to{width:100%}}
+.turn.col{flex-direction:column; gap:12px}
+.yt{display:flex; align-items:center; gap:10px}
+.jr{display:grid; grid-template-columns:1.4fr 1fr; gap:10px; width:100%}
+.judge{border:2px solid var(--line); background:var(--surface); border-radius:18px; padding:14px 10px; font-family:var(--display); font-size:22px; font-weight:800; box-shadow:0 4px 0 var(--line)}
+.judge.yes{background:var(--good); border-color:var(--good); color:#fff; box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.judge:active{transform:translateY(3px); box-shadow:none}
+.ctrl{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+.cbtn{background:var(--surface); border:2px solid var(--line); border-radius:18px; padding:10px 4px 8px; display:flex; flex-direction:column; align-items:center; gap:2px; font-size:26px}
+.cbtn small{font-size:12px; font-weight:800; color:var(--muted)}
+.cbtn.again{border-color:var(--accent); background:var(--soft)}
+.cbtn:active{transform:scale(.95)}
+.cbtn:disabled{opacity:.35}
+
+/* quiz */
+.qhead{display:flex; align-items:center; gap:12px}
+.bar{flex:1; height:14px; background:var(--line); border-radius:99px; overflow:hidden}
+.bar i{display:block; height:100%; background:var(--accent); border-radius:99px; transition:width .4s}
+.score{font-weight:800; font-variant-numeric:tabular-nums}
+.prompt{background:var(--surface); border:3px solid var(--line); border-radius:28px; padding:20px; display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center}
+.prompt .q{font-weight:800; color:var(--muted); font-size:16px}
+.prompt .pic{font-size:80px; line-height:1}
+.sent{font-family:var(--display); font-size:30px; font-weight:800; line-height:1.25}
+.sent .blank{display:inline-block; min-width:70px; border-bottom:4px solid var(--accent); color:var(--accent)}
+.sent .filled{color:var(--good); border-color:var(--good)}
+.speaker{width:104px; height:104px; border-radius:50%; border:none; background:var(--accent); color:#fff; font-size:50px; box-shadow:0 6px 0 rgba(0,0,0,.2)}
+.speaker:active{transform:translateY(4px); box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.slowlink{background:none; border:none; color:var(--muted); font-weight:800; font-size:15px}
+.opts{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.opts.one{grid-template-columns:1fr}
+.opt{background:var(--surface); border:3px solid var(--line); border-radius:22px; min-height:106px; padding:10px; display:flex; align-items:center; justify-content:center; font-size:56px; transition:transform .12s; min-width:0}
+.opt.txt{font-family:var(--display); font-size:23px; font-weight:800; min-height:70px; line-height:1.15; overflow-wrap:anywhere}
+.opts.one .opt.txt{font-size:20px; min-height:60px; justify-content:flex-start; text-align:left; padding:12px 16px}
+.opt .swatch{width:62px; height:62px}
+.opt .num{font-size:58px}
+.opt:active{transform:scale(.96)}
+.opt.ok{border-color:var(--good); background:var(--good-bg); animation:pop .4s}
+.opt.no{border-color:var(--bad); background:var(--bad-bg); animation:shake .4s}
+.opt.dim{opacity:.4}
+@keyframes pop{50%{transform:scale(1.06)}}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.feedback{min-height:56px; display:flex; align-items:center; justify-content:space-between; gap:12px}
+.feedback .msg{font-family:var(--display); font-size:22px; font-weight:800; min-width:0}
+.msg.ok{color:var(--good)} .msg.no{color:var(--bad)}
+.next{border:none; background:var(--accent); color:#fff; border-radius:16px; padding:12px 22px; font-weight:800; font-size:18px; box-shadow:0 4px 0 rgba(0,0,0,.2); flex:none}
+
+/* klart */
+.done{text-align:center; display:flex; flex-direction:column; align-items:center; gap:12px; padding-top:10px}
+.bigstars{font-size:60px; letter-spacing:6px}
+.bigstars span{display:inline-block; animation:starin .5s backwards}
+.bigstars span:nth-child(2){animation-delay:.25s}
+.bigstars span:nth-child(3){animation-delay:.5s}
+@keyframes starin{from{transform:scale(0) rotate(-90deg)}}
+.done h2{font-size:38px; color:var(--accent)}
+.row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+.note{font-size:14px; color:var(--muted); background:var(--surface); border:2px dashed var(--line); border-radius:14px; padding:10px 12px; margin:0}
+#fx{position:fixed; inset:0; pointer-events:none; z-index:20}
+@media (prefers-reduced-motion: reduce){*{animation:none!important; transition:none!important}.go i{width:100%}}
+@media (max-width:380px){.word{font-size:36px}.word.long{font-size:26px}h1{font-size:27px}.sent{font-size:25px}}
+</style>
+</head>
+<body>
+
+
+
+<canvas id="fx"></canvas>
+<div class="wrap" id="app"></div>
+
+<script>
+const LANG = {
+  fr:{name:"Franska", flag:"🇫🇷", tts:"fr-FR", hello:"Bonjour !", praise:["Bravo !","Super !","Très bien !","Génial !","Parfait !"], oops:"Oups !", sv:"franska", luck:"Bonne chance !"},
+  es:{name:"Spanska", flag:"🇪🇸", tts:"es-ES", hello:"¡Hola!", praise:["¡Muy bien!","¡Genial!","¡Bravo!","¡Perfecto!","¡Fantástico!"], oops:"¡Ups!", sv:"spanska", luck:"¡Buena suerte!"}
+};
+const PROFILES = {
+  lily:{name:"Lily", icon:"👧", kid:true, langs:["fr","es"], title:"Lilys <span>språkresa</span>", blurb:"Franska och spanska med bilder, ljud och quiz"},
+  filippa:{name:"Filippa", icon:"👩", langs:["fr"], title:"Franska för <span>Normandie & Paris</span>", blurb:"Franska: mat i Normandie och shopping i Paris"},
+  lukas:{name:"Lukas", icon:"👦", langs:["es"], title:"Spanska: <span>grunder & grammatik</span>", blurb:"Spanska: ord, verb och grammatik"}
+};
+
+/* ---------- Lily ---------- */
+const LILY = [
+  {id:"hej", sv:"Hej & tack", e:"👋", fx:{fr:"Bonjour !",es:"¡Hola!"}, items:[
+    {sv:"hej", fr:"bonjour", es:"hola", e:"👋"},{sv:"hej då", fr:"au revoir", es:"adiós", e:"🚪"},
+    {sv:"tack", fr:"merci", es:"gracias", e:"🙏"},{sv:"snälla", fr:"s'il vous plaît", es:"por favor", e:"🥺"},
+    {sv:"ja", fr:"oui", es:"sí", e:"👍"},{sv:"nej", fr:"non", es:"no", e:"👎"},
+    {sv:"ursäkta", fr:"pardon", es:"perdón", e:"😅"},{sv:"jag heter Lily", fr:"je m'appelle Lily", es:"me llamo Lily", e:"👧"}]},
+  {id:"mat", sv:"Mat", e:"🥐", fx:{fr:"la nourriture",es:"la comida"}, items:[
+    {sv:"bröd", fr:"le pain", es:"el pan", e:"🥖"},{sv:"croissant", fr:"le croissant", es:"el cruasán", e:"🥐"},
+    {sv:"ost", fr:"le fromage", es:"el queso", e:"🧀"},{sv:"äpple", fr:"la pomme", es:"la manzana", e:"🍎"},
+    {sv:"glass", fr:"la glace", es:"el helado", e:"🍦"},{sv:"vatten", fr:"l'eau", es:"el agua", e:"💧"},
+    {sv:"mjölk", fr:"le lait", es:"la leche", e:"🥛"},{sv:"jordgubbe", fr:"la fraise", es:"la fresa", e:"🍓"}]},
+  {id:"djur", sv:"Djur", e:"🐶", fx:{fr:"les animaux",es:"los animales"}, items:[
+    {sv:"hund", fr:"le chien", es:"el perro", e:"🐶"},{sv:"katt", fr:"le chat", es:"el gato", e:"🐱"},
+    {sv:"häst", fr:"le cheval", es:"el caballo", e:"🐴"},{sv:"fågel", fr:"l'oiseau", es:"el pájaro", e:"🐦"},
+    {sv:"fisk", fr:"le poisson", es:"el pez", e:"🐟"},{sv:"ko", fr:"la vache", es:"la vaca", e:"🐮"},
+    {sv:"kanin", fr:"le lapin", es:"el conejo", e:"🐰"},{sv:"mus", fr:"la souris", es:"el ratón", e:"🐭"}]},
+  {id:"farg", sv:"Färger", e:"🎨", fx:{fr:"les couleurs",es:"los colores"}, items:[
+    {sv:"röd", fr:"rouge", es:"rojo", c:"#E3313F"},{sv:"blå", fr:"bleu", es:"azul", c:"#2F5BFF"},
+    {sv:"grön", fr:"vert", es:"verde", c:"#23A955"},{sv:"gul", fr:"jaune", es:"amarillo", c:"#FFD21F"},
+    {sv:"svart", fr:"noir", es:"negro", c:"#16161A"},{sv:"vit", fr:"blanc", es:"blanco", c:"#FFFFFF"},
+    {sv:"rosa", fr:"rose", es:"rosa", c:"#FF8DC7"},{sv:"orange", fr:"orange", es:"naranja", c:"#FF8A1F"}]},
+  {id:"siffror", sv:"Siffror 1–10", e:"🔢", fx:{fr:"les nombres",es:"los números"}, items:[
+    {sv:"ett", fr:"un", es:"uno", n:1},{sv:"två", fr:"deux", es:"dos", n:2},{sv:"tre", fr:"trois", es:"tres", n:3},
+    {sv:"fyra", fr:"quatre", es:"cuatro", n:4},{sv:"fem", fr:"cinq", es:"cinco", n:5},{sv:"sex", fr:"six", es:"seis", n:6},
+    {sv:"sju", fr:"sept", es:"siete", n:7},{sv:"åtta", fr:"huit", es:"ocho", n:8},{sv:"nio", fr:"neuf", es:"nueve", n:9},
+    {sv:"tio", fr:"dix", es:"diez", n:10}]},
+  {id:"resan", sv:"På resan", e:"🏰", fx:{fr:"le voyage",es:"el viaje"}, items:[
+    {sv:"stranden", fr:"la plage", es:"la playa", e:"🏖️"},{sv:"havet", fr:"la mer", es:"el mar", e:"🌊"},
+    {sv:"bilen", fr:"la voiture", es:"el coche", e:"🚗"},{sv:"slottet", fr:"le château", es:"el castillo", e:"🏰"},
+    {sv:"hotellet", fr:"l'hôtel", es:"el hotel", e:"🏨"},{sv:"tornet", fr:"la tour", es:"la torre", e:"🗼"},
+    {sv:"båten", fr:"le bateau", es:"el barco", e:"⛵"},{sv:"var är toaletten?", fr:"où sont les toilettes ?", es:"¿dónde está el baño?", e:"🚻"}]}
+].map(c=>({...c, who:"lily", kind:"pic"}));
+
+/* ---------- Filippa ---------- */
+const FILIPPA = [
+  {id:"tallrik", group:"Normandie", sv:"På tallriken", e:"🦆", fx:{fr:"au menu"}, items:[
+    {sv:"anka", fr:"le canard", e:"🦆"},{sv:"ankbröst", fr:"le magret de canard", e:"🍖"},
+    {sv:"confiterat anklår", fr:"le confit de canard", e:"🍗"},{sv:"duva", fr:"le pigeon", e:"🕊️"},
+    {sv:"ung duva", fr:"le pigeonneau", e:"🐣"},{sv:"lamm från saltängarna", fr:"l'agneau de pré-salé", e:"🐑"},
+    {sv:"musslor", fr:"les moules", e:"🐚"},{sv:"ostron", fr:"les huîtres", e:"🦪"},
+    {sv:"pilgrimsmusslor", fr:"les coquilles Saint-Jacques", e:"🌊"},{sv:"sjötunga", fr:"la sole", e:"🐟"}]},
+  {id:"ost", group:"Normandie", sv:"Ost, cider & smör", e:"🧀", fx:{fr:"le terroir"}, items:[
+    {sv:"camembert", fr:"le camembert", e:"🧀"},{sv:"ostbrickan", fr:"le plateau de fromages", e:"🍽️"},
+    {sv:"cider", fr:"le cidre", e:"🍏"},{sv:"päroncider", fr:"le poiré", e:"🍐"},
+    {sv:"calvados", fr:"le calvados", e:"🥃"},{sv:"saltat smör", fr:"le beurre salé", e:"🧈"},
+    {sv:"crème fraîche", fr:"la crème fraîche", e:"🥛"},{sv:"äppelpaj", fr:"la tarte aux pommes", e:"🥧"},
+    {sv:"risgrynspudding med kanel", fr:"la teurgoule", e:"🍚"}]},
+  {id:"resto", group:"Normandie", sv:"På restaurangen", e:"🍽️", fx:{fr:"au restaurant"}, items:[
+    {sv:"Ett bord för fyra, tack.", fr:"Une table pour quatre, s'il vous plaît.", e:"🍽️"},
+    {sv:"Menyn, tack.", fr:"La carte, s'il vous plaît.", e:"📜"},
+    {sv:"Vad rekommenderar ni?", fr:"Qu'est-ce que vous recommandez ?", e:"🤔"},
+    {sv:"Jag tar dagens meny.", fr:"Je prends le menu du jour.", e:"📋"},
+    {sv:"Medium, tack.", fr:"À point, s'il vous plaît.", e:"🥩"},
+    {sv:"En karaff vatten, tack.", fr:"Une carafe d'eau, s'il vous plaît.", e:"💧"},
+    {sv:"Ett glas rött vin.", fr:"Un verre de vin rouge.", e:"🍷"},
+    {sv:"Det var jättegott!", fr:"C'était délicieux !", e:"😋"},
+    {sv:"Notan, tack.", fr:"L'addition, s'il vous plaît.", e:"🧾"}]},
+  {id:"shop", group:"Paris", sv:"Shopping", e:"🛍️", fx:{fr:"faire du shopping"}, items:[
+    {sv:"Vad kostar det?", fr:"C'est combien ?", e:"💶"},
+    {sv:"Jag tittar bara, tack.", fr:"Je regarde seulement, merci.", e:"👀"},
+    {sv:"Kan jag prova den?", fr:"Est-ce que je peux l'essayer ?", e:"👗"},
+    {sv:"Var är provrummen?", fr:"Où sont les cabines d'essayage ?", e:"🚪"},
+    {sv:"Har ni den i storlek 38?", fr:"Vous l'avez en 38 ?", e:"📏"},
+    {sv:"Den är för liten.", fr:"C'est trop petit.", e:"🤏"},
+    {sv:"Har ni en annan färg?", fr:"Vous l'avez dans une autre couleur ?", e:"🎨"},
+    {sv:"Jag tar den.", fr:"Je le prends.", e:"🛍️"},
+    {sv:"Kan jag betala med kort?", fr:"Je peux payer par carte ?", e:"💳"},
+    {sv:"rean", fr:"les soldes", e:"🏷️"}]},
+  {id:"grund", group:"Bra att kunna", sv:"Klara sig", e:"💬", fx:{fr:"l'essentiel"}, items:[
+    {sv:"Ursäkta (mig).", fr:"Excusez-moi.", e:"🙋‍♀️"},
+    {sv:"Jag förstår inte.", fr:"Je ne comprends pas.", e:"🤷‍♀️"},
+    {sv:"Kan ni säga det igen?", fr:"Vous pouvez répéter ?", e:"🔁"},
+    {sv:"Lite långsammare, tack.", fr:"Plus lentement, s'il vous plaît.", e:"🐢"},
+    {sv:"Talar ni engelska?", fr:"Vous parlez anglais ?", e:"🇬🇧"},
+    {sv:"Var ligger …?", fr:"Où se trouve … ?", e:"🗺️"},
+    {sv:"Ha en trevlig dag!", fr:"Bonne journée !", e:"☀️"}]}
+].map(c=>({...c, who:"filippa", kind:"text"}));
+
+/* ---------- Lukas ---------- */
+const ar=s=>["o","as","a","amos","áis","an"].map(e=>s+e);
+const er=s=>["o","es","e","emos","éis","en"].map(e=>s+e);
+const ir=s=>["o","es","e","imos","ís","en"].map(e=>s+e);
+const adj=s=>["o","a","os","as"].map(e=>s+e);
+const ART=["El","La","Los","Las"], UN=["un","una","unos","unas"];
+const SER=["soy","eres","es","somos","sois","son"];
+const TENER=["tengo","tienes","tiene","tenemos","tenéis","tienen"], IR=["voy","vas","va","vamos","vais","van"];
+const QW=["Qué","Quién","Dónde","Cuándo","Cómo","Por qué","Cuánto"];
+const G = (id,sv,e,fx,rule,rows,qs)=>({id,sv,e,fx:{es:fx},who:"lukas",kind:"grammar",group:"Grammatik",rule,
+  items:rows.map(([es,s])=>({es,sv:s})), qs:qs.map(([s,a,o,t])=>({s,a,o,sv:t}))});
+const LUKAS = [
+  G("genus","el, la, un, una","📘","los artículos",
+    `<p>Alla substantiv är antingen <b>maskulina</b> eller <b>feminina</b>. Maskulina får <b>el</b> och <b>un</b>, feminina får <b>la</b> och <b>una</b>. Ord som slutar på <b>-o</b> är oftast maskulina och ord på <b>-a</b> oftast feminina. I plural blir el → <b>los</b> och la → <b>las</b>.</p><p class="hint">Undantag att lära sig: el día, el problema, el mapa, la mano.</p>`,
+    [["el libro","boken"],["la casa","huset"],["un perro","en hund"],["una mesa","ett bord"],["los libros","böckerna"],["las casas","husen"]],
+    [["___ casa es grande.","La",ART,"Huset är stort."],["___ perro come mucho.","El",ART,"Hunden äter mycket."],
+     ["___ mesa es blanca.","La",ART,"Bordet är vitt."],["Tengo ___ gato.","un",UN,"Jag har en katt."],
+     ["Quiero ___ manzana.","una",UN,"Jag vill ha ett äpple."],["___ día es bonito.","El",ART,"Dagen är fin."],
+     ["___ mano está fría.","La",ART,"Handen är kall."],["___ libros son nuevos.","Los",ART,"Böckerna är nya."],
+     ["___ chicas cantan.","Las",ART,"Tjejerna sjunger."],["Hay ___ problema.","un",UN,"Det finns ett problem."]]),
+  G("ser","Pronomen + ser","🙋‍♂️","yo soy, tú eres…",
+    `<p><b>Ser</b> betyder <i>att vara</i>. Verbet byter form efter vem det handlar om. Därför hoppar spanjorer ofta över pronomenet: <i>Soy Lukas</i> betyder <i>Jag är Lukas</i>.</p>`,
+    [["yo soy","jag är"],["tú eres","du är"],["él / ella es","han / hon är"],["usted es","ni är (artigt)"],["nosotros somos","vi är"],["vosotros sois","ni är"],["ellos / ellas son","de är"]],
+    [["Yo ___ de Suecia.","soy",SER,"Jag är från Sverige."],["Tú ___ muy alto.","eres",SER,"Du är väldigt lång."],
+     ["Ella ___ mi hermana.","es",SER,"Hon är min syster."],["Nosotros ___ amigos.","somos",SER,"Vi är vänner."],
+     ["Vosotros ___ simpáticos.","sois",SER,"Ni är trevliga."],["Ellos ___ españoles.","son",SER,"De är spanjorer."],
+     ["¿De dónde ___ tú?","eres",SER,"Var kommer du ifrån?"],["Mi padre ___ alto.","es",SER,"Min pappa är lång."]]),
+  G("serestar","Ser eller estar?","⚖️","ser y estar",
+    `<p>Båda betyder <i>att vara</i>. Använd <b>ser</b> för vad något <i>är</i>: egenskaper, var man kommer ifrån, yrke, dag och tid. Använd <b>estar</b> för <i>var</i> något är och <i>hur</i> någon mår just nu.</p><p class="hint">Minnesregel: hur du mår och var du är, då använder du estar.</p>`,
+    [["estoy","jag är"],["estás","du är"],["está","han / hon är"],["estamos","vi är"],["estáis","ni är"],["están","de är"]],
+    [["Madrid ___ en España.","está",["es","está","son","están"],"Madrid ligger i Spanien."],
+     ["Yo ___ cansado.","estoy",["soy","estoy","es","está"],"Jag är trött."],
+     ["Lukas ___ sueco.","es",["es","está","son","están"],"Lukas är svensk."],
+     ["La sopa ___ caliente.","está",["es","está","son","están"],"Soppan är varm."],
+     ["Mi tía ___ médica.","es",["es","está","son","están"],"Min moster är läkare."],
+     ["Hoy ___ lunes.","es",["es","está","son","están"],"Idag är det måndag."],
+     ["¿Cómo ___ (tú)?","estás",["eres","estás","es","está"],"Hur mår du?"],
+     ["Nosotros ___ en el hotel.","estamos",["somos","estamos","son","están"],"Vi är på hotellet."],
+     ["El libro ___ interesante.","es",["es","está","son","están"],"Boken är intressant."],
+     ["Los niños ___ contentos.","están",["es","está","son","están"],"Barnen är glada."]]),
+  G("ar","Verb på -ar","🗣️","hablar",
+    `<p>Ta bort <b>-ar</b> och lägg till ändelsen för personen: <b>-o, -as, -a, -amos, -áis, -an</b>.</p><p class="hint">hablar → habl- → hablo (jag pratar)</p>`,
+    [["hablo","jag pratar"],["hablas","du pratar"],["habla","han / hon pratar"],["hablamos","vi pratar"],["habláis","ni pratar"],["hablan","de pratar"]],
+    [["Yo ___ español. (hablar)","hablo",ar("habl"),"Jag pratar spanska."],
+     ["Tú ___ mucho. (trabajar)","trabajas",ar("trabaj"),"Du jobbar mycket."],
+     ["Ella ___ la guitarra. (tocar)","toca",ar("toc"),"Hon spelar gitarr."],
+     ["Nosotros ___ en el mar. (nadar)","nadamos",ar("nad"),"Vi simmar i havet."],
+     ["Ellos ___ música. (escuchar)","escuchan",ar("escuch"),"De lyssnar på musik."],
+     ["Vosotros ___ la cena. (preparar)","preparáis",ar("prepar"),"Ni lagar middagen."],
+     ["¿Qué ___ tú? (buscar)","buscas",ar("busc"),"Vad letar du efter?"],
+     ["Mi padre ___ un coche. (comprar)","compra",ar("compr"),"Min pappa köper en bil."],
+     ["Usted ___ muy bien. (bailar)","baila",ar("bail"),"Ni dansar väldigt bra."]]),
+  G("erir","Verb på -er och -ir","📗","comer, vivir",
+    `<p>Verb på <b>-er</b> får ändelserna <b>-o, -es, -e, -emos, -éis, -en</b>. Verb på <b>-ir</b> böjs likadant, utom i vi- och ni-form: <b>-imos, -ís</b>.</p><p class="hint">comer → como (jag äter) · vivir → vivimos (vi bor)</p>`,
+    [["como","jag äter"],["comes","du äter"],["come","han / hon äter"],["comemos","vi äter"],["vivo","jag bor"],["vivimos","vi bor"],["vivís","ni bor"],["viven","de bor"]],
+    [["Yo ___ pan. (comer)","como",er("com"),"Jag äter bröd."],
+     ["Tú ___ en Estocolmo. (vivir)","vives",ir("viv"),"Du bor i Stockholm."],
+     ["Ella ___ un libro. (leer)","lee",er("le"),"Hon läser en bok."],
+     ["Nosotros ___ agua. (beber)","bebemos",er("beb"),"Vi dricker vatten."],
+     ["Nosotros ___ en Suecia. (vivir)","vivimos",ir("viv"),"Vi bor i Sverige."],
+     ["Ellos ___ una carta. (escribir)","escriben",ir("escrib"),"De skriver ett brev."],
+     ["¿Tú ___ español? (aprender)","aprendes",er("aprend"),"Lär du dig spanska?"],
+     ["Mi hermana ___ la puerta. (abrir)","abre",ir("abr"),"Min syster öppnar dörren."],
+     ["Vosotros ___ mucho. (correr)","corréis",er("corr"),"Ni springer mycket."]]),
+  G("tenerir","tener och ir","🚀","verbos irregulares",
+    `<p>De vanligaste verben följer inte reglerna och måste läras utantill. På spanska <i>har</i> man år: <i>Tengo doce años</i> betyder <i>Jag är tolv år</i>.</p>`,
+    [["tengo","jag har"],["tienes","du har"],["tiene","han / hon har"],["tenemos","vi har"],["voy","jag går / åker"],["vas","du går"],["va","han / hon går"],["vamos","vi går"],["van","de går"]],
+    [["Yo ___ doce años. (tener)","tengo",TENER,"Jag är tolv år."],
+     ["¿Cuántos años ___ tú? (tener)","tienes",TENER,"Hur gammal är du?"],
+     ["Ella ___ un perro. (tener)","tiene",TENER,"Hon har en hund."],
+     ["Nosotros ___ hambre. (tener)","tenemos",TENER,"Vi är hungriga."],
+     ["Ellos ___ dos hermanos. (tener)","tienen",TENER,"De har två syskon."],
+     ["Yo ___ a la playa. (ir)","voy",IR,"Jag går till stranden."],
+     ["¿Adónde ___ tú? (ir)","vas",IR,"Vart ska du?"],
+     ["Nosotros ___ al cine. (ir)","vamos",IR,"Vi går på bio."],
+     ["Mis padres ___ a París. (ir)","van",IR,"Mina föräldrar åker till Paris."]]),
+  G("fraga","Frågeord","❓","las preguntas",
+    `<p>Frågeord har alltid accent. En spansk fråga börjar med ett upp och nervänt frågetecken: <b>¿</b>Dónde vives<b>?</b></p>`,
+    [["¿qué?","vad?"],["¿quién?","vem?"],["¿dónde?","var?"],["¿cuándo?","när?"],["¿cómo?","hur?"],["¿por qué?","varför?"],["¿cuánto?","hur mycket?"]],
+    [["¿___ te llamas?","Cómo",QW,"Vad heter du?"],["¿___ vives?","Dónde",QW,"Var bor du?"],
+     ["¿___ es tu cumpleaños?","Cuándo",QW,"När fyller du år?"],["¿___ cuesta?","Cuánto",QW,"Hur mycket kostar det?"],
+     ["¿___ es ese chico?","Quién",QW,"Vem är den killen?"],["¿___ quieres comer?","Qué",QW,"Vad vill du äta?"],
+     ["¿___ estudias español?","Por qué",QW,"Varför pluggar du spanska?"],["¿___ hora es?","Qué",QW,"Vad är klockan?"]]),
+  G("adj","Adjektiv som böjs","🎨","los adjetivos",
+    `<p>Adjektivet står oftast <b>efter</b> substantivet och böjs efter det: <b>-o</b> blir <b>-a</b> om ordet är feminint, och i plural läggs <b>-s</b> till.</p>`,
+    [["el chico alto","den långa killen"],["la chica alta","den långa tjejen"],["los chicos altos","de långa killarna"],["las chicas altas","de långa tjejerna"]],
+    [["La casa es ___. (blanco)","blanca",adj("blanc"),"Huset är vitt."],
+     ["Los perros son ___. (pequeño)","pequeños",adj("pequeñ"),"Hundarna är små."],
+     ["Mi hermana es ___. (simpático)","simpática",adj("simpátic"),"Min syster är trevlig."],
+     ["Las camisetas son ___. (rojo)","rojas",adj("roj"),"T-shirtarna är röda."],
+     ["El libro es ___. (aburrido)","aburrido",adj("aburrid"),"Boken är tråkig."],
+     ["Los coches son ___. (rápido)","rápidos",adj("rápid"),"Bilarna är snabba."],
+     ["La playa es ___. (bonito)","bonita",adj("bonit"),"Stranden är fin."],
+     ["Las chicas son ___. (alto)","altas",adj("alt"),"Tjejerna är långa."]]),
+  ...[
+  {id:"lgrund", sv:"Grunder", e:"👋", fx:{es:"lo básico"}, kind:"text", items:[
+    {sv:"hej", es:"hola", e:"👋"},{sv:"hej då", es:"adiós", e:"🚪"},{sv:"god morgon", es:"buenos días", e:"🌅"},
+    {sv:"tack", es:"gracias", e:"🙏"},{sv:"snälla", es:"por favor", e:"🥺"},{sv:"jag heter Lukas", es:"me llamo Lukas", e:"👦"},
+    {sv:"jag förstår inte", es:"no entiendo", e:"🤷‍♂️"},{sv:"pratar du engelska?", es:"¿hablas inglés?", e:"🇬🇧"}]},
+  {id:"lsiffror", sv:"Siffror 1–20", e:"🔢", fx:{es:"los números"}, kind:"pic", items:[
+    ...["uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez","once","doce","trece","catorce","quince","dieciséis","diecisiete","dieciocho","diecinueve","veinte"]
+      .map((w,i)=>({es:w, n:i+1, sv:String(i+1)}))]},
+  {id:"ldagar", sv:"Veckodagar", e:"📅", fx:{es:"los días"}, kind:"text", items:[
+    {sv:"måndag", es:"lunes"},{sv:"tisdag", es:"martes"},{sv:"onsdag", es:"miércoles"},{sv:"torsdag", es:"jueves"},
+    {sv:"fredag", es:"viernes"},{sv:"lördag", es:"sábado"},{sv:"söndag", es:"domingo"},{sv:"idag", es:"hoy"},{sv:"imorgon", es:"mañana"}]},
+  {id:"lfamilj", sv:"Familjen", e:"👨‍👩‍👧‍👦", fx:{es:"la familia"}, kind:"text", items:[
+    {sv:"mamma", es:"la madre", e:"👩"},{sv:"pappa", es:"el padre", e:"👨"},{sv:"bror", es:"el hermano", e:"👦"},
+    {sv:"syster", es:"la hermana", e:"👧"},{sv:"farfar / morfar", es:"el abuelo", e:"👴"},{sv:"farmor / mormor", es:"la abuela", e:"👵"},
+    {sv:"kusin", es:"el primo", e:"🧒"},{sv:"föräldrarna", es:"los padres", e:"👫"}]}
+  ].map(c=>({...c, who:"lukas", group:"Ord"}))
+];
+const CATS=[...LILY,...FILIPPA,...LUKAS];
+
+/* ---------- lagring ---------- */
+const store = {
+  get(k,d){try{const v=localStorage.getItem("sprakresa:"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem("sprakresa:"+k,JSON.stringify(v))}catch(e){}}
+};
+const S = {p:store.get("person",null), lang:"fr", view:"who", cat:null, idx:0, quiz:null, bubble:null, paused:false};
+const best = store.get("best2",{});
+function setPerson(p){S.p=p; store.set("person",p); const P=PROFILES[p]; S.lang=store.get("lang_"+p,P.langs[0]); if(!P.langs.includes(S.lang))S.lang=P.langs[0]; S.view="home"; S.bubble=null}
+if(S.p&&PROFILES[S.p]) setPerson(S.p); else S.p=null;
+
+/* ---------- tal ---------- */
+let voices=[];
+function loadVoices(){try{voices=speechSynthesis.getVoices()}catch(e){voices=[]}}
+if("speechSynthesis" in window){loadVoices(); speechSynthesis.onvoiceschanged=loadVoices}
+const FEMALE=/female|femme|mujer|amélie|amelie|audrey|aurélie|aurelie|marie|julie|denise|céline|celine|léa|virginie|monica|mónica|marisol|paulina|elvira|helena|laura|lucia|lucía|paloma|isabela|sabina|google fran|google espa/i;
+const MALE=/\bmale\b|thomas|nicolas|henri|daniel|jorge|juan|diego|pablo|carlos|alvaro|álvaro|eddy|grandpa|reed|rocko/i;
+function voiceFor(code){
+  const pre=code.slice(0,2);
+  const same=voices.filter(v=>v.lang && v.lang.replace('_','-')===code);
+  const near=voices.filter(v=>v.lang && v.lang.slice(0,2)===pre);
+  const pick=list=>list.find(v=>FEMALE.test(v.name)&&!MALE.test(v.name)&&/premium|enhanced|förbättrad|google/i.test(v.name))
+    || list.find(v=>FEMALE.test(v.name)&&!MALE.test(v.name)) || list.find(v=>!MALE.test(v.name));
+  return pick(same) || pick(near) || same[0] || near[0] || null;
+}
+function speak(text, slow, onend){
+  let done=false; const fin=()=>{if(!done){done=true; onend&&onend()}};
+  if(!("speechSynthesis" in window)){setTimeout(fin,600);return}
+  try{
+    speechSynthesis.cancel();
+    const clean=text.replace(/\s*\([^)]*\)/g,"").replace(/\bLily\b/g, S.lang==="fr"?"Lili":"Lili").replace(/…/g,"");
+    const u=new SpeechSynthesisUtterance(clean);
+    const code=LANG[S.lang].tts; u.lang=code;
+    const v=voiceFor(code); if(v) u.voice=v;
+    u.rate=slow?0.55:0.85; u.pitch=PROFILES[S.p]?.kid?1.1:1;
+    u.onend=fin; u.onerror=fin;
+    setTimeout(fin, (slow?2400:1600)+clean.length*(slow?170:110)); // om enheten aldrig säger "klar"
+    speechSynthesis.speak(u);
+  }catch(e){fin()}
+}
+const hasVoice=()=>!!voiceFor(LANG[S.lang].tts);
+
+/* ---------- hjälp ---------- */
+const $=s=>document.querySelector(s);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const cat=()=>CATS.find(c=>c.id===S.cat);
+const P=()=>PROFILES[S.p];
+const myCats=()=>CATS.filter(c=>c.who===S.p && c.fx[S.lang]!=null);
+const hasPic=it=>it.c||it.n!=null||it.e;
+function pic(it){
+  if(it.c) return `<span class="swatch" style="background:${it.c}"></span>`;
+  if(it.n!=null) return `<span class="num">${it.n}</span>`;
+  if(it.e) return `<span class="pic">${it.e}</span>`;
+  return "";
+}
+function starStr(n){return "★★★".split("").map((s,i)=>i<n?`<b>${s}</b>`:s).join("")}
+const key=c=>S.p+":"+S.lang+":"+c;
+
+function mascotSVG(){
+  const hat = S.lang==="fr"
+    ? `<ellipse cx="50" cy="22" rx="26" ry="9" fill="#1B2240"/><circle cx="50" cy="12" r="4" fill="#1B2240"/>`
+    : `<g transform="translate(70 20)"><circle cx="-7" r="5" fill="#E3313F"/><circle cx="6" cy="-6" r="5" fill="#E3313F"/><circle cx="6" cy="6" r="5" fill="#E3313F"/><circle cx="-4" cy="-8" r="5" fill="#E3313F"/><circle cx="-4" cy="8" r="5" fill="#E3313F"/><circle r="4" fill="#F5B400"/></g>`;
+  return `<svg class="mascot" id="mascot" viewBox="0 0 100 100" aria-hidden="true">
+    <ellipse cx="50" cy="94" rx="24" ry="4" fill="var(--line)"/>
+    <path d="M18 62 Q10 40 30 32 Q50 18 70 32 Q90 40 82 62 Q80 88 50 88 Q20 88 18 62Z" fill="var(--accent)"/>
+    <ellipse cx="50" cy="66" rx="20" ry="16" fill="#fff" opacity=".9"/>
+    <circle cx="38" cy="48" r="8" fill="#fff"/><circle cx="62" cy="48" r="8" fill="#fff"/>
+    <circle cx="39" cy="49" r="4" fill="#1B2240"/><circle cx="61" cy="49" r="4" fill="#1B2240"/>
+    <path d="M45 57 L55 57 L50 64Z" fill="#F5B400"/>${hat}</svg>`;
+}
+function cheer(text){
+  const m=$("#mascot"); if(m){m.classList.remove("cheer"); void m.offsetWidth; m.classList.add("cheer")}
+  const b=$("#bubble"); if(b && text){b.textContent=text}
+}
+
+/* ---------- vyer ---------- */
+function header(){
+  const p=P(), L=LANG[S.lang];
+  const left = p.kid
+    ? `${mascotSVG()}<div class="grow"><div class="bubble" id="bubble">${esc(S.bubble||L.hello+" "+p.name)}</div></div>`
+    : `<div class="adult grow"><span class="pi">${p.icon}</span><div><b>${p.name}</b><small>${L.flag} ${L.name}</small></div></div>`;
+  return `<div class="top">${left}<button class="switch" data-a="who">Byt person</button></div>`;
+}
+function whoView(){
+  return `<h1 class="disp" style="padding-top:8px">Vem ska <span>öva</span>?</h1>
+  <div class="people">${Object.entries(PROFILES).map(([k,p])=>`<button class="person" data-a="person" data-v="${k}" data-l="${p.langs.length>1?"both":p.langs[0]}">
+    <span class="pi">${p.icon}</span><span><b>${p.name}</b><small>${p.blurb}</small></span></button>`).join("")}</div>
+  <p class="note">Varje person har sina egna teman och stjärnor. Allt sparas bara på den här enheten.</p>`;
+}
+function home(){
+  const p=P(), cats=myCats(), groups=[...new Set(cats.map(c=>c.group||""))];
+  return `${header()}
+  <h1 class="disp">${p.title}</h1>
+  ${p.langs.length>1?`<div class="langs" role="group" aria-label="Välj språk">
+    ${p.langs.map(k=>`<button class="lang" data-a="lang" data-v="${k}" aria-pressed="${S.lang===k}"><span class="flag">${LANG[k].flag}</span>${LANG[k].name}</button>`).join("")}</div>`:""}
+  ${groups.map(g=>`${g?`<h3 class="group">${g}</h3>`:""}<div class="grid">
+    ${cats.filter(c=>(c.group||"")===g).map(c=>`<button class="cat" data-a="cat" data-v="${c.id}">
+      <span class="pic">${c.e}</span><span class="sv">${c.sv}</span><span class="fx">${esc(c.fx[S.lang])}</span>
+      <span class="stars" aria-label="${best[key(c.id)]||0} av 3 stjärnor">${starStr(best[key(c.id)]||0)}</span></button>`).join("")}</div>`).join("")}
+  ${voices.length && !hasVoice() ? `<p class="note">Den här enheten saknar en röst för ${LANG[S.lang].sv}. Lägg till den under Inställningar → Hjälpmedel → Uppläst innehåll → Röster.</p>`:""}`;
+}
+function catView(){
+  const c=cat(), g=c.kind==="grammar";
+  return `${header()}
+  <button class="back" data-a="home">← Alla teman</button>
+  <div class="hero"><span class="pic">${c.e}</span><div><h2>${c.sv}</h2><p>${esc(c.fx[S.lang])}</p></div></div>
+  ${g?`<div class="rule">${c.rule}<table class="conj"><tbody>${c.items.map((it,i)=>`<tr data-a="row" data-v="${i}"><td>🔊 ${esc(it[S.lang])}</td><td>${esc(it.sv)}</td></tr>`).join("")}</tbody></table><p class="hint">Tryck på en rad för att höra den.</p></div>`:""}
+  <button class="big b1" data-a="learn"><span class="ic">🗣️</span><span>Lyssna & säg efter<small>${g?"Säg formerna högt, en i taget":"Hör ordet, säg det själv"}</small></span></button>
+  <button class="big b2" data-a="quiz"><span class="ic">🎯</span><span>${g?"Öva grammatiken":"Spela quiz"}<small>${Math.min(8,(c.qs||c.items).length)} frågor · samla stjärnor</small></span></button>
+  ${g?"":`<div class="preview">${c.items.map(it=>`<span class="chip">${esc(it[S.lang])}</span>`).join("")}</div>`}`;
+}
+function learn(anim=true){
+  const c=cat(), n=c.items.length;
+  if(S.idx>=n) return `${header()}
+    <button class="back" data-a="cat" data-v="${c.id}">← ${c.sv}</button>
+    <div class="done"><div class="bigstars"><span>🎉</span></div><h2>Alla ${n} klara!</h2>
+    <div class="row"><button class="big b2" data-a="quiz"><span class="ic">🎯</span><span>${c.kind==="grammar"?"Öva grammatiken":"Spela quiz"}</span></button>
+    <button class="big b1" data-a="learn"><span class="ic">🔁</span><span>En gång till</span></button></div></div>`;
+  const it=c.items[S.idx], w=it[S.lang];
+  return `${header()}
+  <button class="back" data-a="cat" data-v="${c.id}">← ${c.sv}</button>
+  <div class="dots">${c.items.map((_,i)=>`<span class="dot ${i===S.idx?"on":i<S.idx?"past":""}"></span>`).join("")}</div>
+  <div class="card ${anim?"in":""}" data-a="repeat">
+    ${hasPic(it)?`<span class="anim">${pic(it)}</span>`:""}
+    <div class="word ${w.length>16?"long":""}">${esc(w)}</div>
+    <div class="svw">${esc(it.sv)}</div>
+  </div>
+  <div class="turn" id="turn" aria-live="polite">${S.paused?"Pausad":""}</div>
+  <div class="ctrl">
+    <button class="cbtn" data-a="prev" ${S.idx===0?"disabled":""}>◀<small>Förra</small></button>
+    <button class="cbtn again" data-a="repeat">🔁<small>Igen</small></button>
+    <button class="cbtn" data-a="slow">🐢<small>Långsamt</small></button>
+    <button class="cbtn" data-a="pause">${S.paused?"▶️<small>Fortsätt</small>":"⏸️<small>Paus</small>"}</button>
+  </div>
+  <p class="note">Säg ordet högt när det är din tur. Satt det, tryck 👍 så kommer nästa ord. Annars 🔁 för att höra det igen.</p>`;
+}
+function makeQuiz(){
+  const c=cat();
+  if(c.kind==="grammar") return {qs:shuffle(c.qs).slice(0,8).map(q=>{
+      const others=shuffle(q.o.filter(x=>x!==q.a)).slice(0,3);
+      return {...q, type:"gap", opts:shuffle([q.a,...others])}}), i:0, score:0, answered:null};
+  const pool=shuffle(c.items).slice(0,8), types=c.kind==="pic"?["listen","read","pic"]:["listen","read","sv"];
+  return {qs:pool.map((it,i)=>({it, type:types[i%3], opts:shuffle([it,...shuffle(c.items.filter(x=>x!==it)).slice(0,3)])})), i:0, score:0, answered:null};
+}
+const fullSentence=q=>q.s.replace("___",q.a).replace(/^(¿?)([a-zé])/,(m,a,b)=>a+b);
+function quizView(){
+  const Q=S.quiz, q=Q.qs[Q.i], L=LANG[S.lang], c=cat(), done=Q.answered!=null;
+  let prompt="", opts="", side, one=false;
+  if(q.type==="gap"){
+    const parts=q.s.split("___");
+    prompt=`<span class="q">Välj rätt ord</span><div class="sent">${esc(parts[0])}<span class="blank ${done?"filled":""}">${done?esc(q.a):"&nbsp;"}</span>${esc(parts[1]||"")}</div><span class="svw">${esc(q.sv)}</span>`;
+    opts=q.opts.map((o,i)=>{
+      let st=""; if(done){ st = o===q.a?"ok":i===Q.answered?"no":"dim" }
+      return `<button class="opt txt ${st}" data-a="ans" data-v="${i}" ${done?"disabled":""}>${esc(o)}</button>`}).join("");
+  } else {
+    if(q.type==="listen") prompt=`<span class="q">Lyssna! ${c.kind==="pic"?"Vilken bild är det?":"Vad betyder det?"}</span><button class="speaker" data-a="qsay" aria-label="Spela upp">🔊</button><button class="slowlink" data-a="qslow">🐢 Lite långsammare</button>`;
+    if(q.type==="read") prompt=`<span class="q">Vad betyder det här?</span><div class="word ${q.it[S.lang].length>16?"long":""}">${esc(q.it[S.lang])}</div><button class="slowlink" data-a="qsay">🔊 Lyssna</button>`;
+    if(q.type==="pic") prompt=`<span class="q">Vad heter det på ${L.sv}?</span>${pic(q.it)}`;
+    if(q.type==="sv") prompt=`<span class="q">Hur säger man det på ${L.sv}?</span>${q.it.e?`<span class="pic" style="font-size:56px">${q.it.e}</span>`:""}<div class="word long" style="color:var(--ink)">${esc(q.it.sv)}</div>`;
+    side = (q.type==="pic"||q.type==="sv") ? "fx" : (c.kind==="pic" ? "pic" : "sv");
+    one = side!=="pic" && q.opts.some(o=>(side==="fx"?o[S.lang]:o.sv).length>14);
+    opts=q.opts.map((o,i)=>{
+      let st=""; if(done){ st = o===q.it?"ok":i===Q.answered?"no":"dim" }
+      const inner = side==="pic"?pic(o):esc(side==="fx"?o[S.lang]:o.sv);
+      return `<button class="opt ${side!=="pic"?"txt":""} ${st}" data-a="ans" data-v="${i}" ${done?"disabled":""}>${inner}</button>`}).join("");
+  }
+  const right = done && (q.type==="gap" ? q.opts[Q.answered]===q.a : q.opts[Q.answered]===q.it);
+  const answerText = q.type==="gap" ? fullSentence(q) : q.it[S.lang];
+  return `${header()}
+  <div class="qhead"><button class="back" data-a="cat" data-v="${S.cat}" aria-label="Avsluta">✕</button>
+    <div class="bar"><i style="width:${(Q.i+(done?1:0))/Q.qs.length*100}%"></i></div>
+    <span class="score">⭐ ${Q.score}</span></div>
+  <div class="prompt">${prompt}</div>
+  <div class="opts ${one?"one":""}">${opts}</div>
+  <div class="feedback">${!done?"":`<span class="msg ${right?"ok":"no"}">${right?"Rätt!":(q.type==="gap"?"Rätt svar: ":"Det var ")+esc(q.type==="gap"?q.a:answerText)}</span><button class="next" data-a="qnext">${Q.i<Q.qs.length-1?"Nästa →":"Klar!"}</button>`}</div>`;
+}
+function stars(score,total){const p=score/total;return p>=.85?3:p>=.6?2:p>=.35?1:0}
+function doneView(){
+  const Q=S.quiz, st=stars(Q.score,Q.qs.length), L=LANG[S.lang];
+  const title = st===3?L.praise[3]:st===2?L.praise[0]:st===1?"Bra jobbat!":"Försök igen!";
+  return `${header()}
+  <div class="done">
+    <div class="bigstars">${[0,1,2].map(i=>`<span style="color:${i<st?"var(--es2)":"var(--line)"}">★</span>`).join("")}</div>
+    <h2>${esc(title)}</h2>
+    <p style="margin:0;font-weight:800;font-size:20px">${Q.score} av ${Q.qs.length} rätt</p>
+    <div class="row">
+      <button class="big b1" data-a="quiz"><span class="ic">🔁</span><span>Spela igen</span></button>
+      <button class="big b2" data-a="home"><span class="ic">🏠</span><span>Nytt tema</span></button>
+    </div>
+  </div>`;
+}
+function render(anim){
+  document.body.dataset.lang=S.lang;
+  if(!S.p) S.view="who";
+  const v={who:whoView,home,cat:catView,learn:()=>learn(anim),quiz:quizView,done:doneView}[S.view];
+  $("#app").innerHTML=v();
+  scrollTo(0,0);
+}
+
+/* ---------- lyssna & säg efter ---------- */
+let run=0, timers=[];
+function stopAuto(){run++; timers.forEach(clearTimeout); timers=[]; try{speechSynthesis.cancel()}catch(e){}}
+function setTurn(html,cls=""){const t=$("#turn"); if(t){t.className="turn "+cls; t.innerHTML=html}}
+function wiggle(){const p=document.querySelector(".card .anim"); if(p){p.classList.remove("wiggle"); void p.offsetWidth; p.classList.add("wiggle")}}
+function sayAfter(slow){
+  stopAuto(); S.paused=false; const my=run, c=cat(); if(S.idx>=c.items.length) return;
+  const w=c.items[S.idx][S.lang];
+  wiggle(); setTurn("👂 Lyssna…");
+  speak(w, slow, ()=>{
+    if(my!==run) return;
+    setTurn(`<div class="yt"><span class="ring"></span>Din tur! Säg det högt</div>
+      <div class="jr"><button class="judge yes" data-a="good">👍 Det satt</button><button class="judge" data-a="repeat">🔁 Igen</button></div>`,"col");
+  });
+}
+function advance(){
+  const n=cat().items.length;
+  S.idx++;
+  if(S.idx<n){render(true); sayAfter()}
+  else{render(); cheer(LANG[S.lang].praise[1]); if(P().kid) speak(LANG[S.lang].praise[1]); confetti()}
+}
+
+/* ---------- händelser ---------- */
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-a]"); if(!b) return;
+  const a=b.dataset.a, v=b.dataset.v, L=LANG[S.lang];
+  if(!["repeat","slow","pause","row","qsay","qslow"].includes(a)) stopAuto();
+  if(a==="who"){S.p=null; S.view="who"; render()}
+  else if(a==="person"){setPerson(v); render(); if(P().kid){speak(LANG[S.lang].hello+" "+P().name); cheer()}}
+  else if(a==="lang"){S.lang=v; store.set("lang_"+S.p,v); S.bubble=null; render(); speak(LANG[v].hello); cheer()}
+  else if(a==="home"){S.view="home"; S.bubble=null; render()}
+  else if(a==="cat"){S.cat=v; S.view="cat"; S.bubble=cat().fx[S.lang]; render(); if(cat().kind!=="grammar") speak(cat().fx[S.lang])}
+  else if(a==="row"){speak(cat().items[+v][S.lang])}
+  else if(a==="learn"){S.view="learn"; S.idx=0; S.paused=false; S.bubble="Lyssna och säg efter!"; render(true); sayAfter()}
+  else if(a==="next"){S.idx++; render(true); if(!S.paused) sayAfter()}
+  else if(a==="prev"){S.idx=Math.max(0,S.idx-1); render(true); if(!S.paused) sayAfter()}
+  else if(a==="repeat"){if(S.idx<cat().items.length){sayAfter(); const p=$(".cbtn[data-a=pause]"); if(p)p.innerHTML="⏸️<small>Paus</small>"}}
+  else if(a==="slow"){sayAfter(true); const p=$(".cbtn[data-a=pause]"); if(p)p.innerHTML="⏸️<small>Paus</small>"}
+  else if(a==="pause"){
+    if(S.paused){sayAfter(); b.innerHTML="⏸️<small>Paus</small>"}
+    else{stopAuto(); S.paused=true; setTurn("Pausad"); b.innerHTML="▶️<small>Fortsätt</small>"}
+  }
+  else if(a==="good"){if(P().kid) S.bubble=L.praise[Math.random()*L.praise.length|0]; advance(); cheer()}
+  else if(a==="quiz"){S.quiz=makeQuiz(); S.view="quiz"; S.bubble=L.luck; render(); autoQ()}
+  else if(a==="qsay"){speak(S.quiz.qs[S.quiz.i].it[S.lang])}
+  else if(a==="qslow"){speak(S.quiz.qs[S.quiz.i].it[S.lang],true)}
+  else if(a==="ans"){answer(+v)}
+  else if(a==="qnext"){
+    const Q=S.quiz;
+    if(Q.i<Q.qs.length-1){Q.i++; Q.answered=null; render(); autoQ()}
+    else{
+      const st=stars(Q.score,Q.qs.length), k=key(S.cat);
+      if(st>(best[k]||0)){best[k]=st; store.set("best2",best)}
+      S.view="done"; S.bubble=st>=2?L.praise[1]:(S.lang==="es"?"¡Otra vez!":"Encore !");
+      render(); cheer(); if(P().kid) speak(S.bubble); if(st>=2) confetti();
+    }
+  }
+});
+function autoQ(){const q=S.quiz.qs[S.quiz.i]; if(q.type==="listen") setTimeout(()=>speak(q.it[S.lang]),250)}
+function answer(i){
+  const Q=S.quiz, q=Q.qs[Q.i]; if(Q.answered!=null) return;
+  Q.answered=i; const L=LANG[S.lang];
+  const right = q.type==="gap" ? q.opts[i]===q.a : q.opts[i]===q.it;
+  const say = q.type==="gap" ? fullSentence(q) : q.it[S.lang];
+  if(right){Q.score++; S.bubble=L.praise[Math.random()*L.praise.length|0]} else S.bubble=L.oops;
+  render(); cheer();
+  speak(right && P().kid ? S.bubble+" "+say : say);
+}
+
+/* ---------- konfetti ---------- */
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const cv=$("#fx"), ctx=cv.getContext("2d"), W=cv.width=innerWidth, H=cv.height=innerHeight;
+  const cs=getComputedStyle(document.body), cols=[cs.getPropertyValue("--accent"),cs.getPropertyValue("--accent2"),"#23A955","#FF8DC7","#FFD21F"];
+  const ps=Array.from({length:140},()=>({x:W/2,y:H*.35,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,r:Math.random()*6+4,c:cols[Math.random()*cols.length|0],a:Math.random()*6,s:(Math.random()-.5)*.3}));
+  let t=0;(function f(){ctx.clearRect(0,0,W,H);ps.forEach(p=>{p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.a+=p.s;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.fillStyle=p.c;ctx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);ctx.restore()});if(++t<150)requestAnimationFrame(f);else ctx.clearRect(0,0,W,H)})();
+}
+
+render();
+setTimeout(()=>{if(S.view==="home")render()},800);
+</script>
+
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}</script>
+</body></html>
