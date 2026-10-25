@@ -137,7 +137,19 @@ h3.group{font-size:15px; text-transform:uppercase; letter-spacing:.08em; color:v
 .judge.yes{background:var(--good); border-color:var(--good); color:#fff; box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .mic{width:100%; border:none; border-radius:18px; padding:14px 10px; background:var(--accent); color:#fff; font-family:var(--display); font-size:22px; font-weight:800; box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .mic:active{transform:translateY(3px); box-shadow:none}
-.mic.on{animation:pulse 1s ease-in-out infinite}
+.mic.on{animation:micpulse 1.2s ease-in-out infinite}
+@keyframes micpulse{50%{filter:brightness(1.15); box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 30%,transparent)}}
+.mt{background:var(--surface); border:2px solid var(--line); border-radius:var(--r); padding:14px 16px; display:flex; flex-direction:column; gap:10px}
+.mt h3{font-size:20px}
+.mt .kv{font-size:14px; line-height:1.5; overflow-wrap:anywhere}
+.mt .kv b{color:var(--accent)}
+.mt .btns{display:flex; flex-wrap:wrap; gap:8px}
+.mt .btns button{border:2px solid var(--line); background:var(--soft); border-radius:12px; padding:8px 12px; font-weight:800; font-size:15px}
+.mt .btns button[aria-pressed="true"]{border-color:var(--accent); color:var(--accent)}
+.meter{height:16px; background:var(--line); border-radius:99px; overflow:hidden}
+.meter i{display:block; height:100%; width:0; background:var(--good); transition:width .08s}
+.log{font:12px/1.45 ui-monospace,Menlo,monospace; background:var(--soft); border-radius:12px; padding:10px; max-height:300px; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; margin:0}
+.linkbtn{background:none; border:none; color:var(--muted); font-weight:800; font-size:15px; text-decoration:underline; padding:4px 0; align-self:center}
 .heard{font-family:var(--body); font-size:16px; font-weight:700; color:var(--muted)}
 .heard.ok{color:var(--good)} .heard.no{color:var(--bad)}
 .judge:active{transform:translateY(3px); box-shadow:none}
@@ -492,7 +504,8 @@ function whoView(){
   return `<h1 class="disp" style="padding-top:8px">Vem ska <span>öva</span>?</h1>
   <div class="people">${Object.entries(PROFILES).map(([k,p])=>`<button class="person" data-a="person" data-v="${k}" data-l="${p.langs.length>1?"both":p.langs[0]}">
     <span class="pi">${p.icon}</span><span><b>${p.name}</b><small>${p.blurb}</small></span></button>`).join("")}</div>
-  <p class="note">Varje person har sina egna teman och stjärnor. Allt sparas bara på den här enheten.</p>`;
+  <p class="note">Varje person har sina egna teman och stjärnor. Allt sparas bara på den här enheten.</p>
+  <button class="linkbtn" data-a="mictest">🎤 Mictest</button>`;
 }
 function home(){
   const p=P(), cats=myCats(), groups=[...new Set(cats.map(c=>c.group||""))];
@@ -539,7 +552,8 @@ function learn(anim=true){
     <button class="cbtn" data-a="slow">🐢<small>Långsamt</small></button>
     <button class="cbtn" data-a="pause">${S.paused?"▶️<small>Fortsätt</small>":"⏸️<small>Paus</small>"}</button>
   </div>
-  <p class="note">Säg ordet högt när det är din tur. Satt det, tryck 👍 så kommer nästa ord. Annars 🔁 för att höra det igen.</p>`;
+  <p class="note">Säg ordet högt när det är din tur. Satt det, tryck 👍 så kommer nästa ord. Annars 🔁 för att höra det igen.</p>
+  ${REC?`<button class="linkbtn" data-a="mictest">🎤 Fungerar inte mikrofonen? Mictest</button>`:""}`;
 }
 function makeQuiz(){
   const c=cat();
@@ -598,8 +612,8 @@ function doneView(){
 }
 function render(anim){
   document.body.dataset.lang=S.lang;
-  if(!S.p) S.view="who";
-  const v={who:whoView,home,cat:catView,learn:()=>learn(anim),quiz:quizView,done:doneView}[S.view];
+  if(!S.p && S.view!=="mictest") S.view="who";
+  const v={mictest:mictestView,who:whoView,home,cat:catView,learn:()=>learn(anim),quiz:quizView,done:doneView}[S.view];
   $("#app").innerHTML=v();
   scrollTo(0,0);
 }
@@ -639,26 +653,109 @@ function micMatch(heard,target){const h=norm(heard), t=norm(target); if(!t) retu
   for(let i=0;i+n<=hw.length;i++){const s=hw.slice(i,i+n).join(" "); if(lev(s,t)<=Math.max(1,Math.round(t.length*tol))) return true}
   return false}
 function heard(html,cls){const h=$("#heard"); if(h){h.className="heard "+(cls||""); h.innerHTML=html}}
-function listen(btn){
+const MICLOG=[]; let micT0=0;
+function mlog(m){const line=((performance.now()-micT0)/1000).toFixed(2)+"s  "+m; MICLOG.push(line); if(MICLOG.length>200) MICLOG.shift();
+  const el=$("#mlog"); if(el){el.textContent=MICLOG.join("\n"); el.scrollTop=el.scrollHeight}}
+/* Startar taligenkänning. Safari på iOS levererar ofta bara delresultat och avslutar inte alltid själv,
+   därför: interimResults + continuous, egen tystnadstimer och en nödtimer som alltid återställer knappen. */
+function startRec(lang, onText, onDone){
   stopRec(); try{speechSynthesis.cancel()}catch(e){}
+  micT0=performance.now(); MICLOG.length=0;
+  const r=new REC(); rec=r;
+  r.lang=lang; r.interimResults=true; r.continuous=true; r.maxAlternatives=5;
+  mlog("start lang="+lang+" ("+(window.SpeechRecognition?"SpeechRecognition":"webkitSpeechRecognition")+")");
+  let ended=false, quiet=null, stopped=false;
+  const finish=(why)=>{if(ended) return; ended=true; clearTimeout(quiet); clearTimeout(hard); clearTimeout(soft); mlog("klar: "+why); if(rec===r) rec=null; onDone(why)};
+  const stop=(why)=>{if(stopped) return; stopped=true; mlog("stop() – "+why); try{r.stop()}catch(e){} setTimeout(()=>finish(why),1500)};
+  ["start","audiostart","soundstart","speechstart","speechend","soundend","audioend","nomatch"].forEach(ev=>r.addEventListener(ev,()=>mlog("event: "+ev)));
+  r.onresult=e=>{
+    const alts=[]; let fin=false;
+    for(let i=e.resultIndex;i<e.results.length;i++){const res=e.results[i]; fin=fin||res.isFinal; for(let j=0;j<res.length;j++) alts.push(res[j].transcript)}
+    // hela texten hittills också, ifall ordet delats upp
+    const all=[...e.results].map(x=>x[0].transcript).join(" ");
+    mlog((fin?"FINAL":"delresultat")+": "+alts.map(a=>JSON.stringify(a)).join(" | "));
+    clearTimeout(quiet); quiet=setTimeout(()=>stop("tyst 1,5 s efter tal"),1500);
+    if(onText([...alts,all],fin)) stop("rätt svar");
+  };
+  r.onerror=e=>{mlog("error: "+e.error+(e.message?" – "+e.message:"")); finish("fel:"+e.error)};
+  r.onend=()=>{mlog("event: end"); finish("end")};
+  const soft=setTimeout(()=>stop("max 7 s"),7000);
+  const hard=setTimeout(()=>finish("nödtimer 10 s (onend kom aldrig)"),10000);
+  try{r.start()}catch(e){mlog("start() kastade: "+e.message); finish("fel:start")}
+}
+function listen(btn){
   const my=run, target=cat().items[S.idx][S.lang];
-  rec=new REC(); rec.lang=LANG[S.lang].tts; rec.interimResults=false; rec.maxAlternatives=5; rec.continuous=false;
-  let got=false;
-  btn.classList.add("on"); btn.textContent="🎤 Lyssnar…"; heard("");
-  rec.onresult=e=>{got=true; const alts=[...e.results[0]].map(a=>a.transcript);
-    if(my!==run) return;
+  let ok=false, last="", err="";
+  btn.classList.add("on"); btn.textContent="🎤 Lyssnar… säg det nu"; heard("");
+  startRec(LANG[S.lang].tts, (alts)=>{
+    if(my!==run||ok) return true;
+    last=alts[0]||last; heard("Jag hör: <b>"+esc(last)+"</b>");
     if(alts.some(a=>micMatch(a,target))){
-      heard("✅ "+(P().kid?LANG[S.lang].praise[Math.random()*5|0]:"Rätt!"),"ok");
+      ok=true; heard("✅ "+(P().kid?LANG[S.lang].praise[Math.random()*5|0]:"Rätt!"),"ok");
       if(P().kid) S.bubble=LANG[S.lang].praise[Math.random()*5|0];
-      cheer(); const t=setTimeout(()=>{if(my===run) advance()},1100); timers.push(t);
-    } else heard("Jag hörde: <b>"+esc(alts[0]||"…")+"</b> – försök igen!","no")};
-  rec.onerror=e=>{if(my!==run) return; got=true;
-    heard({"not-allowed":"Mikrofonen är inte tillåten. Slå på Siri och diktering, och tillåt mikrofon för Safari.",
+      cheer(); const t=setTimeout(()=>{if(my===run) advance()},1100); timers.push(t); return true}
+    return false
+  }, (why)=>{
+    if(my!==run||ok) return;
+    btn.classList.remove("on"); btn.textContent="🎤 Tryck och säg det igen";
+    const e=why.startsWith("fel:")?why.slice(4):"";
+    if(e) heard({"not-allowed":"Mikrofonen är inte tillåten. Tillåt mikrofon för Safari och slå på Siri och diktering.",
       "service-not-allowed":"Taligenkänning är avstängd. Slå på Siri och diktering i Inställningar.",
       "network":"Taligenkänningen behöver nät – använd knapparna nedanför.",
-      "no-speech":"Jag hörde inget – tryck och säg det igen!"}[e.error]||"Det gick inte att lyssna – använd knapparna nedanför.","no")};
-  rec.onend=()=>{if(my!==run) return; btn.classList.remove("on"); btn.textContent="🎤 Tryck och säg det igen"; if(!got) heard("Jag hörde inget – försök igen!","no")};
-  try{rec.start()}catch(e){heard("Det gick inte att starta mikrofonen.","no")}
+      "no-speech":"Jag hörde inget – tryck och säg det igen!",
+      "audio-capture":"Hittar ingen mikrofon."}[e]||`Det gick inte att lyssna (${esc(e)}). Prova Mictest längst ner.`,"no");
+    else if(last) heard("Jag hörde: <b>"+esc(last)+"</b> – försök igen!","no");
+    else heard("Jag hörde inget – försök igen, eller öppna Mictest längst ner.","no");
+  });
+}
+
+/* ---------- mictest ---------- */
+let meterStop=null;
+function mictestView(){
+  const L=S.mtLang||LANG[S.lang]?.tts||"fr-FR";
+  const info=[
+    ["Taligenkänning",REC?(window.SpeechRecognition?"SpeechRecognition":"webkitSpeechRecognition"):"<b>saknas</b>"],
+    ["Uppläsning",("speechSynthesis" in window)?voices.length+" röster":"saknas"],
+    ["Säker anslutning (https)",String(window.isSecureContext)],
+    ["Startad från hemskärmen",String(!!(navigator.standalone||matchMedia("(display-mode: standalone)").matches))],
+    ["Nät",navigator.onLine?"online":"<b>offline</b>"],
+    ["getUserMedia",String(!!navigator.mediaDevices?.getUserMedia)],
+    ["Webbläsare",esc(navigator.userAgent)]];
+  return `<button class="back" data-a="${S.p?"home":"who"}">← Tillbaka</button>
+  <h1>🎤 Mictest</h1>
+  <div class="mt"><h3>1. Hörs mikrofonen?</h3>
+    <p class="kv">Testar mikrofonen direkt, utan Siri. Stapeln ska röra sig när du pratar.</p>
+    <div class="btns"><button data-a="mtmeter">${meterStop?"Stoppa":"Starta ljudmätare"}</button></div>
+    <div class="meter"><i id="mtbar"></i></div><div class="kv" id="mtmeterinfo"></div></div>
+  <div class="mt"><h3>2. Förstår taligenkänningen?</h3>
+    <div class="btns">${["fr-FR","es-ES","sv-SE"].map(l=>`<button data-a="mtlang" data-v="${l}" aria-pressed="${l===L}">${l}</button>`).join("")}</div>
+    <div class="btns"><button data-a="mtrec">Lyssna (säg något)</button><button data-a="mtcopy">Kopiera logg</button></div>
+    <div class="kv" id="mtheard"></div>
+    <pre class="log" id="mlog">${esc(MICLOG.join("\n"))||"Loggen visas här."}</pre></div>
+  <div class="mt"><h3>Miljö</h3><div class="kv">${info.map(([k,v])=>`${k}: <b>${v}</b>`).join("<br>")}</div></div>
+  <p class="note">Händer inget i steg 2 men stapeln rör sig i steg 1: kontrollera Inställningar → Siri → "Lyssna efter"/Siri på, Inställningar → Allmänt → Tangentbord → Diktering på, och Inställningar → Skärmtid → Innehålls- och integritetsbegränsningar → Tillåtna appar → Siri och diktering.</p>`;
+}
+async function toggleMeter(btn){
+  if(meterStop){meterStop(); meterStop=null; btn.textContent="Starta ljudmätare"; return}
+  const info=$("#mtmeterinfo");
+  try{
+    const st=await navigator.mediaDevices.getUserMedia({audio:true});
+    const ac=new (window.AudioContext||window.webkitAudioContext)(); await ac.resume();
+    const an=ac.createAnalyser(); an.fftSize=512; ac.createMediaStreamSource(st).connect(an);
+    const buf=new Uint8Array(an.fftSize); let raf, peak=0;
+    const tick=()=>{an.getByteTimeDomainData(buf); let m=0; for(const v of buf) m=Math.max(m,Math.abs(v-128)); peak=Math.max(peak,m);
+      const bar=$("#mtbar"); if(bar) bar.style.width=Math.min(100,m/64*100)+"%";
+      if(info) info.textContent="Mikrofon: "+(st.getAudioTracks()[0]?.label||"okänd")+" · toppnivå "+peak+"/128"; raf=requestAnimationFrame(tick)};
+    tick(); btn.textContent="Stoppa";
+    meterStop=()=>{cancelAnimationFrame(raf); st.getTracks().forEach(t=>t.stop()); ac.close()};
+  }catch(e){if(info) info.innerHTML="<b>Fel:</b> "+esc(e.name+" – "+e.message)}
+}
+function mtRec(btn){
+  if(!REC){$("#mtheard").innerHTML="<b>Den här webbläsaren saknar taligenkänning.</b>"; return}
+  if(meterStop){meterStop(); meterStop=null; const m=$("[data-a=mtmeter]"); if(m) m.textContent="Starta ljudmätare"}
+  btn.textContent="Lyssnar…"; $("#mtheard").textContent="";
+  startRec(S.mtLang||LANG[S.lang]?.tts||"fr-FR", alts=>{const h=$("#mtheard"); if(h) h.innerHTML="Hör: <b>"+esc(alts[0])+"</b>"; return false},
+    why=>{btn.textContent="Lyssna (säg något)"; const h=$("#mtheard"); if(h&&!h.textContent) h.innerHTML="Inget hördes · "+esc(why)});
 }
 function advance(){
   const n=cat().items.length;
@@ -671,7 +768,8 @@ function advance(){
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-a]"); if(!b) return;
   const a=b.dataset.a, v=b.dataset.v, L=LANG[S.lang];
-  if(!["repeat","slow","pause","row","qsay","qslow","mic"].includes(a)) stopAuto();
+  if(!["repeat","slow","pause","row","qsay","qslow","mic","mtlang","mtrec","mtmeter","mtcopy"].includes(a)) stopAuto();
+  if(meterStop && !a.startsWith("mt")){meterStop(); meterStop=null}
   if(a==="who"){S.p=null; S.view="who"; render()}
   else if(a==="person"){setPerson(v); render(); if(P().kid){speak(LANG[S.lang].hello+" "+P().name); cheer()}}
   else if(a==="lang"){S.lang=v; store.set("lang_"+S.p,v); S.bubble=null; render(); speak(LANG[v].hello); cheer()}
@@ -688,6 +786,11 @@ document.addEventListener("click",e=>{
     else{stopAuto(); S.paused=true; setTurn("Pausad"); b.innerHTML="▶️<small>Fortsätt</small>"}
   }
   else if(a==="mic"){listen(b)}
+  else if(a==="mictest"){S.back=S.view; S.view="mictest"; render()}
+  else if(a==="mtlang"){S.mtLang=v; document.querySelectorAll("[data-a=mtlang]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.v===v))}
+  else if(a==="mtrec"){mtRec(b)}
+  else if(a==="mtmeter"){toggleMeter(b)}
+  else if(a==="mtcopy"){const t=MICLOG.join("\n")+"\n\n"+navigator.userAgent; (navigator.clipboard?.writeText(t)||Promise.reject()).then(()=>{b.textContent="Kopierad!"},()=>{b.textContent="Gick inte att kopiera"})}
   else if(a==="good"){if(P().kid) S.bubble=L.praise[Math.random()*L.praise.length|0]; advance(); cheer()}
   else if(a==="quiz"){S.quiz=makeQuiz(); S.view="quiz"; S.bubble=L.luck; render(); autoQ()}
   else if(a==="qsay"){speak(S.quiz.qs[S.quiz.i].it[S.lang])}
