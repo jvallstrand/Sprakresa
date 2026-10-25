@@ -612,7 +612,7 @@ function doneView(){
     </div>
   </div>`;
 }
-const APP_VERSION="2026-10-25 11:05";
+const APP_VERSION="2026-10-25 11:12";
 function resetAll(){
   if(!confirm("Börja om från början?\n\nAlla stjärnor, valt språk och vald person raderas för alla på den här enheten.")) return;
   try{Object.keys(localStorage).filter(k=>k.startsWith("sprakresa:")).forEach(k=>localStorage.removeItem(k))}catch(e){}
@@ -659,7 +659,8 @@ function sayAfter(slow){
 /* ---------- mikrofon (Safari: Siri/diktering) ---------- */
 const REC = window.SpeechRecognition || window.webkitSpeechRecognition || null;
 let rec=null;
-function stopRec(){try{rec&&rec.abort()}catch(e){} rec=null}
+let recToken=null;
+function stopRec(){recToken=null; try{rec&&rec.abort()}catch(e){} if(rec) recEndedAt=performance.now(); rec=null}
 const MIC_ART=/^(le|la|les|l|un|une|des|du|de|el|los|las|lo|unos|unas|al|del)$/;
 function norm(t){return t.toLowerCase().replace(/\s*\([^)]*\)/g,"").normalize("NFD").replace(/[\u0300-\u036f]/g,"")
   .replace(/[^a-z0-9ñ ]+/g," ").split(/\s+/).filter(w=>w&&!MIC_ART.test(w)).join(" ")}
@@ -678,33 +679,51 @@ const MICLOG=[]; let micT0=0;
 const STANDALONE=!!(navigator.standalone||matchMedia("(display-mode: standalone)").matches);
 function mlog(m){const line=((performance.now()-micT0)/1000).toFixed(2)+"s  "+m; MICLOG.push(line); if(MICLOG.length>200) MICLOG.shift();
   const el=$("#mlog"); if(el){el.textContent=MICLOG.join("\n"); el.scrollTop=el.scrollHeight}}
-/* Startar taligenkänning. Safari på iOS levererar ofta bara delresultat och avslutar inte alltid själv,
-   därför: interimResults + continuous, egen tystnadstimer och en nödtimer som alltid återställer knappen. */
+/* Startar taligenkänning. iOS släpper ljudet långsamt efter förra lyssningen eller uppläsningen,
+   så vi väntar in det, och om ljudet ändå inte kommer igång startar vi om en gång automatiskt. */
+let recEndedAt=0;
 function startRec(lang, onText, onDone, cont){
-  stopRec(); try{speechSynthesis.cancel()}catch(e){}
-  micT0=performance.now(); MICLOG.length=0;
-  const r=new REC(); rec=r;
+  stopRec(); const wasSpeaking=(()=>{try{return speechSynthesis.speaking}catch(e){return false}})(); try{speechSynthesis.cancel()}catch(e){}
   if(cont===undefined) cont=(store.get("micmode","cont")==="cont");
-  r.lang=lang; r.interimResults=true; r.continuous=!!cont; r.maxAlternatives=5;
-  mlog("start lang="+lang+" continuous="+r.continuous+" hemskärm="+!!(navigator.standalone||matchMedia("(display-mode: standalone)").matches)+" nät="+navigator.onLine);
-  let ended=false, quiet=null, stopped=false, sound=false;
-  const finish=(why)=>{if(ended) return; ended=true; clearTimeout(quiet); clearTimeout(hard); clearTimeout(soft); mlog("klar: "+why); if(rec===r) rec=null; onDone(why,sound)};
-  const stop=(why)=>{if(stopped) return; stopped=true; mlog("stop() – "+why); try{r.stop()}catch(e){} setTimeout(()=>finish(why),1500)};
-  ["start","audiostart","soundstart","speechstart","speechend","soundend","audioend","nomatch"].forEach(ev=>r.addEventListener(ev,()=>{mlog("event: "+ev); if(ev==="soundstart"||ev==="speechstart") sound=true}));
-  r.onresult=e=>{sound=true;
-    const alts=[]; let fin=false;
-    for(let i=e.resultIndex;i<e.results.length;i++){const res=e.results[i]; fin=fin||res.isFinal; for(let j=0;j<res.length;j++) alts.push(res[j].transcript)}
-    // hela texten hittills också, ifall ordet delats upp
-    const all=[...e.results].map(x=>x[0].transcript).join(" ");
-    mlog((fin?"FINAL":"delresultat")+": "+alts.map(a=>JSON.stringify(a)).join(" | "));
-    clearTimeout(quiet); quiet=setTimeout(()=>stop("tyst 1,5 s efter tal"),1500);
-    if(onText([...alts,all],fin)) stop("rätt svar");
-  };
-  r.onerror=e=>{mlog("error: "+e.error+(e.message?" – "+e.message:"")); finish("fel:"+e.error)};
-  r.onend=()=>{mlog("event: end"); finish("end")};
-  const soft=setTimeout(()=>stop("max 7 s"),7000);
-  const hard=setTimeout(()=>finish("nödtimer 10 s (onend kom aldrig)"),10000);
-  try{r.start()}catch(e){mlog("start() kastade: "+e.message); finish("fel:start")}
+  micT0=performance.now(); MICLOG.length=0;
+  let done=false, cancelled=false;
+  const token={}; recToken=token;
+  const finishAll=(why,sound)=>{if(done) return; done=true; recEndedAt=performance.now(); onDone(why,sound)};
+  function attempt(n){
+    if(recToken!==token) return;
+    const r=new REC(); rec=r;
+    r.lang=lang; r.interimResults=true; r.continuous=!!cont; r.maxAlternatives=5;
+    mlog("försök "+n+": lang="+lang+" continuous="+r.continuous+" hemskärm="+STANDALONE+" nät="+navigator.onLine);
+    let ended=false, quiet=null, stopped=false, sound=false, gotText=false, watch=null;
+    const clear=()=>{clearTimeout(quiet); clearTimeout(hard); clearTimeout(soft); clearTimeout(watch)};
+    const finish=(why)=>{if(ended) return; ended=true; clear(); mlog("klar: "+why); if(rec===r) rec=null; recEndedAt=performance.now();
+      if(recToken!==token) return;
+      // inget ljud alls: starta om en gång
+      if(!sound && !gotText && n===1 && !why.startsWith("fel:not-allowed") && !why.startsWith("fel:service")){mlog("inget ljud – startar om"); setTimeout(()=>attempt(2),700); return}
+      finishAll(why,sound)};
+    const stop=(why)=>{if(stopped) return; stopped=true; mlog("stop() – "+why); try{r.stop()}catch(e){} setTimeout(()=>finish(why),1500)};
+    ["start","audiostart","soundstart","speechstart","speechend","soundend","audioend","nomatch"].forEach(ev=>r.addEventListener(ev,()=>{
+      mlog("event: "+ev); if(ev==="soundstart"||ev==="speechstart") sound=true;
+      if(ev==="audiostart"&&n===1) watch=setTimeout(()=>{if(!sound&&!gotText){mlog("inget ljud efter 2,5 s");
+        stopped=true; try{r.abort()}catch(e){} setTimeout(()=>finish("tyst start"),400)}},2500)}));
+    r.onresult=e=>{sound=gotText=true;
+      const alts=[]; let fin=false;
+      for(let i=e.resultIndex;i<e.results.length;i++){const res=e.results[i]; fin=fin||res.isFinal; for(let j=0;j<res.length;j++) alts.push(res[j].transcript)}
+      const all=[...e.results].map(x=>x[0].transcript).join(" ");
+      mlog((fin?"FINAL":"delresultat")+": "+alts.map(a=>JSON.stringify(a)).join(" | "));
+      clearTimeout(quiet); quiet=setTimeout(()=>stop("tyst 1,5 s efter tal"),1500);
+      if(recToken===token && onText([...alts,all],fin)) stop("rätt svar");
+    };
+    r.onerror=e=>{mlog("error: "+e.error+(e.message?" – "+e.message:"")); if(e.error==="aborted"&&stopped) return; finish("fel:"+e.error)};
+    r.onend=()=>{mlog("event: end"); finish("end")};
+    const soft=setTimeout(()=>stop("max 7 s"),7000);
+    const hard=setTimeout(()=>finish("nödtimer 10 s (onend kom aldrig)"),10000);
+    try{r.start()}catch(e){mlog("start() kastade: "+e.message); finish("fel:start")}
+  }
+  // vänta in att förra lyssningen och uppläsningen släppt ljudet
+  const wait=Math.max(wasSpeaking?400:0, 800-(performance.now()-recEndedAt));
+  if(wait>0) mlog("väntar "+Math.round(wait)+" ms på ljudet");
+  setTimeout(()=>attempt(1), Math.max(0,wait));
 }
 function listen(btn){
   const my=run, target=cat().items[S.idx][S.lang];
