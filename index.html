@@ -226,6 +226,7 @@ h3.group{font-size:15px; text-transform:uppercase; letter-spacing:.08em; color:v
 }
 body[data-lang="it"]{--accent:var(--it); --accent2:var(--it2)}
 body[data-lang="rv"]{--accent:var(--rv); --accent2:var(--rv2)}
+body[data-lang="pt"]{--accent:#2EE6D6; --accent2:#FFB13D}
 body{background:
   radial-gradient(520px 380px at 0% -8%, color-mix(in srgb,var(--accent) 22%,transparent), transparent 70%),
   radial-gradient(480px 360px at 100% 6%, color-mix(in srgb,var(--accent2) 16%,transparent), transparent 70%),
@@ -255,6 +256,10 @@ h1 span,.word,.hero p,.cat .fx,.adult small,.done h2,.turn{color:var(--accent); 
 .swatch{border-color:var(--line)}
 .linkbtn{color:var(--muted)} .back{color:var(--muted)}
 .conj td:first-child{color:var(--accent)}
+.langs{grid-template-columns:repeat(2,minmax(0,1fr))}
+.lang{min-width:0; font-size:15px; padding:10px; gap:8px} .lang .flag{font-size:24px} .lang span:not(.flag){min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.person>span:last-child{min-width:0}
+.adult>div{min-width:0} .adult b{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 </style>
 </head>
 <body>
@@ -271,13 +276,15 @@ const LANG = {
   rv:{name:"Rövarspråket", flag:"🏴‍☠️", tts:"sv-SE", hello:rov("Hej!"), praise:["Bra!","Snyggt!","Toppen!","Grymt!","Perfekt!"].map(rov), oops:rov("Hoppsan!"), sv:"rövarspråket", luck:rov("Lycka till!")},
   fr:{name:"Franska", flag:"🇫🇷", tts:"fr-FR", hello:"Bonjour !", praise:["Bravo !","Super !","Très bien !","Génial !","Parfait !"], oops:"Oups !", sv:"franska", luck:"Bonne chance !"},
   it:{name:"Italienska", flag:"🇮🇹", tts:"it-IT", hello:"Ciao!", praise:["Bravissimo!","Ottimo!","Bravo!","Perfetto!","Fantastico!"], oops:"Ops!", sv:"italienska", luck:"Buona fortuna!"},
+  pt:{name:"Portugisiska", flag:"🇵🇹", tts:"pt-PT", hello:"Olá!", praise:["Muito bem!","Boa!","Fantástico!","Perfeito!","Excelente!"], oops:"Ups!", sv:"portugisiska", luck:"Boa sorte!"},
   es:{name:"Spanska", flag:"🇪🇸", tts:"es-ES", hello:"¡Hola!", praise:["¡Muy bien!","¡Genial!","¡Bravo!","¡Perfecto!","¡Fantástico!"], oops:"¡Ups!", sv:"spanska", luck:"¡Buena suerte!"}
 };
 const PROFILES = {
   lily:{name:"Lily", icon:"👧", kid:true, langs:["fr","es","it","rv"], title:"Lilys <span>språkresa</span>", blurb:"Franska, spanska och italienska med bilder, ljud och quiz"},
   filippa:{name:"Filippa", icon:"👩", langs:["fr","rv"], title:"Franska för <span>Normandie & Paris</span>", blurb:"Franska: mat i Normandie och shopping i Paris"},
   lukas:{name:"Lukas", icon:"👦", langs:["es","fr","rv"], title:"Språk: <span>grunder & grammatik</span>", blurb:"Spanska och franska: ord, verb och grammatik"},
-  johan:{name:"Johan", icon:"👨", langs:["es","it","fr","rv"], borrow:["lukas:grammar","filippa"], title:"Språk för <span>vin & resor</span>", blurb:"Mest spanska, plus italienska och franska: vin, mat och grammatik"}
+  johan:{name:"Johan", icon:"👨", langs:["es","it","fr","rv"], borrow:["lukas:grammar","filippa"], title:"Språk för <span>vin & resor</span>", blurb:"Mest spanska, plus italienska och franska: vin, mat och grammatik"},
+  akerberg:{name:"Familjen Åkerberg/​Widerberg", short:"Familjen Å/W", icon:"👨‍👩‍👦‍👧‍👧", lenient:true, langs:["pt","rv"], title:"Português para <span>Cascais</span>", blurb:"Portugisiska inför höstlovet i Cascais – för barn och vuxna"}
 };
 
 /* ---------- Lily ---------- */
@@ -521,8 +528,75 @@ JOHAN.push({id:"jrist", group:"Mat & resa", sv:"På ristorante", e:"🍝", fx:{i
   {sv:"En espresso, tack.", it:"Un caffè, per favore.", e:"☕"},
   {sv:"Det var jättegott!", it:"Era buonissimo!", e:"😋"},
   {sv:"Notan, tack.", it:"Il conto, per favore.", e:"🧾"}]});
+/* ---------- Familjen Åkerberg/Widerberg: portugisiska (Portugal) inför Cascais ---------- */
+const CASCAIS = [
+  {id:"cola", group:"För barnen", sv:"Hej & tack", e:"👋", fx:{pt:"Olá!"}, kind:"pic", items:[
+    {sv:"hej", pt:"olá", e:"👋"},{sv:"hej då", pt:"adeus", e:"🚪"},{sv:"tack", pt:"obrigado (obrigada)", e:"🙏"},
+    {sv:"snälla", pt:"por favor", e:"🥺"},{sv:"ja", pt:"sim", e:"👍"},{sv:"nej", pt:"não", e:"👎"},
+    {sv:"vad heter du?", pt:"como te chamas?", e:"🤔"},{sv:"vi går till stranden!", pt:"vamos à praia!", e:"🏖️"}]},
+  {id:"cpraia", group:"För barnen", sv:"På stranden", e:"🏖️", fx:{pt:"na praia"}, kind:"pic", items:[
+    {sv:"stranden", pt:"a praia", e:"🏖️"},{sv:"havet", pt:"o mar", e:"🌊"},{sv:"vågen", pt:"a onda", e:"🏄"},
+    {sv:"sanden", pt:"a areia", e:"⏳"},{sv:"solen", pt:"o sol", e:"☀️"},{sv:"sandslottet", pt:"o castelo de areia", e:"🏰"},
+    {sv:"båten", pt:"o barco", e:"⛵"},{sv:"solkrämen", pt:"o protetor solar", e:"🧴"}]},
+  {id:"ccomida", group:"För barnen", sv:"Mat", e:"🍦", fx:{pt:"a comida"}, kind:"pic", items:[
+    {sv:"bröd", pt:"o pão", e:"🥖"},{sv:"ost", pt:"o queijo", e:"🧀"},{sv:"äpple", pt:"a maçã", e:"🍎"},
+    {sv:"glass", pt:"o gelado", e:"🍦"},{sv:"vatten", pt:"a água", e:"💧"},{sv:"mjölk", pt:"o leite", e:"🥛"},
+    {sv:"jordgubbe", pt:"o morango", e:"🍓"},{sv:"vaniljbakelse", pt:"o pastel de nata", e:"🥧"}]},
+  {id:"canimais", group:"För barnen", sv:"Djur", e:"🐬", fx:{pt:"os animais"}, kind:"pic", items:[
+    {sv:"hund", pt:"o cão", e:"🐶"},{sv:"katt", pt:"o gato", e:"🐱"},{sv:"häst", pt:"o cavalo", e:"🐴"},
+    {sv:"fågel", pt:"o pássaro", e:"🐦"},{sv:"fisk", pt:"o peixe", e:"🐟"},{sv:"kanin", pt:"o coelho", e:"🐰"},
+    {sv:"delfin", pt:"o golfinho", e:"🐬"},{sv:"krabba", pt:"o caranguejo", e:"🦀"}]},
+  {id:"ccores", group:"För barnen", sv:"Färger", e:"🎨", fx:{pt:"as cores"}, kind:"pic", items:[
+    {sv:"röd", pt:"vermelho", c:"#E3313F"},{sv:"blå", pt:"azul", c:"#2F5BFF"},{sv:"grön", pt:"verde", c:"#23A955"},
+    {sv:"gul", pt:"amarelo", c:"#FFD21F"},{sv:"svart", pt:"preto", c:"#16161A"},{sv:"vit", pt:"branco", c:"#FFFFFF"},
+    {sv:"rosa", pt:"cor-de-rosa", c:"#FF8DC7"},{sv:"orange", pt:"cor de laranja", c:"#FF8A1F"}]},
+  {id:"cnum", group:"För barnen", sv:"Siffror 1–10", e:"🔢", fx:{pt:"os números"}, kind:"pic", items:
+    ["um","dois","três","quatro","cinco","seis","sete","oito","nove","dez"].map((w,i)=>({pt:w, n:i+1, sv:["ett","två","tre","fyra","fem","sex","sju","åtta","nio","tio"][i]}))},
+  {id:"cfam", group:"För barnen", sv:"Familjen", e:"👨‍👩‍👧", fx:{pt:"a família"}, kind:"pic", items:[
+    {sv:"mamma", pt:"a mãe", e:"👩"},{sv:"pappa", pt:"o pai", e:"👨"},{sv:"bror", pt:"o irmão", e:"👦"},
+    {sv:"syster", pt:"a irmã", e:"👧"},{sv:"farmor / mormor", pt:"a avó", e:"👵"},{sv:"farfar / morfar", pt:"o avô", e:"👴"},
+    {sv:"kompis", pt:"o amigo (a amiga)", e:"🧒"}]},
+  {id:"ccafe", group:"För vuxna", sv:"Café & pastelaria", e:"☕", fx:{pt:"na pastelaria"}, kind:"text", items:[
+    {sv:"En espresso, tack.", pt:"Um café, por favor.", e:"☕"},
+    {sv:"En latte i glas, tack.", pt:"Um galão, por favor.", e:"🥛"},
+    {sv:"Två vaniljbakelser, tack.", pt:"Dois pastéis de nata, por favor.", e:"🥧"},
+    {sv:"En färskpressad apelsinjuice.", pt:"Um sumo de laranja natural.", e:"🍊"},
+    {sv:"Ett rostat bröd med smör.", pt:"Uma torrada.", e:"🍞"},
+    {sv:"Att äta här.", pt:"Para comer aqui.", e:"🪑"},
+    {sv:"Att ta med.", pt:"Para levar.", e:"🛍️"},
+    {sv:"Något mer?", pt:"Mais alguma coisa?", e:"❓"}]},
+  {id:"crest", group:"För vuxna", sv:"På restaurangen", e:"🐟", fx:{pt:"no restaurante"}, kind:"text", items:[
+    {sv:"Ett bord för fem, tack.", pt:"Uma mesa para cinco, por favor.", e:"🍽️"},
+    {sv:"Menyn, tack.", pt:"A ementa, por favor.", e:"📜"},
+    {sv:"Vad rekommenderar ni?", pt:"O que recomenda?", e:"🤔"},
+    {sv:"Har ni en barnmeny?", pt:"Tem menu para crianças?", e:"🧒"},
+    {sv:"Dagens fisk, grillad.", pt:"O peixe do dia, grelhado.", e:"🐟"},
+    {sv:"En flaska vatten utan kolsyra.", pt:"Uma garrafa de água sem gás.", e:"💧"},
+    {sv:"Ett glas vinho verde.", pt:"Um copo de vinho verde.", e:"🍷"},
+    {sv:"Det var jättegott!", pt:"Estava delicioso!", e:"😋"},
+    {sv:"Notan, tack.", pt:"A conta, por favor.", e:"🧾"}]},
+  {id:"cvia", group:"För vuxna", sv:"Ta sig runt", e:"🚆", fx:{pt:"andar por aí"}, kind:"text", items:[
+    {sv:"En biljett till Lissabon, tack.", pt:"Um bilhete para Lisboa, por favor.", e:"🎫"},
+    {sv:"När går tåget?", pt:"A que horas parte o comboio?", e:"🚆"},
+    {sv:"Var ligger stationen?", pt:"Onde fica a estação?", e:"🚉"},
+    {sv:"Var ligger stranden?", pt:"Onde fica a praia?", e:"🏖️"},
+    {sv:"Är det långt?", pt:"É longe?", e:"📏"},
+    {sv:"till vänster", pt:"à esquerda", e:"⬅️"},
+    {sv:"till höger", pt:"à direita", e:"➡️"},
+    {sv:"rakt fram", pt:"sempre em frente", e:"⬆️"}]},
+  {id:"cbasico", group:"För vuxna", sv:"Klara sig", e:"💬", fx:{pt:"o básico"}, kind:"text", items:[
+    {sv:"God morgon.", pt:"Bom dia.", e:"🌅"},
+    {sv:"God eftermiddag.", pt:"Boa tarde.", e:"☀️"},
+    {sv:"God kväll.", pt:"Boa noite.", e:"🌙"},
+    {sv:"Ursäkta.", pt:"Desculpe.", e:"🙋"},
+    {sv:"Jag förstår inte.", pt:"Não percebo.", e:"🤷"},
+    {sv:"Kan ni säga det igen?", pt:"Pode repetir, por favor?", e:"🔁"},
+    {sv:"Lite långsammare, tack.", pt:"Mais devagar, por favor.", e:"🐢"},
+    {sv:"Talar ni engelska?", pt:"Fala inglês?", e:"🇬🇧"},
+    {sv:"Tack så mycket!", pt:"Muito obrigado! (obrigada)", e:"🙏"}]}
+].map(c=>({...c, who:"akerberg"}));
 /* ---------- Det viktigaste: för alla, på alla språk ---------- */
-const BAS={id:"bas", group:"Börja här", sv:"Det viktigaste", e:"⭐", fx:{fr:"l'essentiel",es:"lo esencial",it:"l'essenziale"}, who:"all", kind:"text", items:[
+const BAS={id:"bas", group:"Börja här", sv:"Det viktigaste", e:"⭐", fx:{fr:"l'essentiel",es:"lo esencial",it:"l'essenziale",pt:"o essencial"}, who:"all", kind:"text", items:[
   {sv:"hej", fr:"bonjour", es:"hola", it:"ciao", e:"👋"},
   {sv:"hej då", fr:"au revoir", es:"adiós", it:"arrivederci", e:"🚪"},
   {sv:"tack", fr:"merci", es:"gracias", it:"grazie", e:"🙏"},
@@ -536,8 +610,9 @@ const BAS={id:"bas", group:"Börja här", sv:"Det viktigaste", e:"⭐", fx:{fr:"
   {sv:"var är toaletten?", fr:"où sont les toilettes ?", es:"¿dónde está el baño?", it:"dov'è il bagno?", e:"🚻"},
   {sv:"vad kostar det?", fr:"c'est combien ?", es:"¿cuánto cuesta?", it:"quanto costa?", e:"💶"},
   {sv:"hjälp!", fr:"au secours !", es:"¡socorro!", it:"aiuto!", e:"🆘"}]};
+BAS.items.forEach((it,i)=>it.pt=["olá", "adeus", "obrigado (obrigada)", "por favor", "sim", "não", "desculpe", "perdão", "não percebo", "fala inglês?", "onde é a casa de banho?", "quanto custa?", "socorro!"][i]);
 BAS.fx.rv=rov(BAS.sv); BAS.items.forEach(it=>it.rv=rov(it.sv));
-const CATS=[BAS,...LILY,...FILIPPA,...LUKAS,...JOHAN];
+const CATS=[BAS,...LILY,...FILIPPA,...LUKAS,...JOHAN,...CASCAIS];
 
 /* ---------- lagring ---------- */
 const store = {
@@ -553,7 +628,7 @@ if(S.p&&PROFILES[S.p]) setPerson(S.p); else S.p=null;
 let voices=[];
 function loadVoices(){try{voices=speechSynthesis.getVoices()}catch(e){voices=[]}}
 if("speechSynthesis" in window){loadVoices(); speechSynthesis.onvoiceschanged=loadVoices}
-const FEMALE=/female|femme|mujer|amélie|amelie|audrey|aurélie|aurelie|marie|julie|denise|céline|celine|léa|virginie|monica|mónica|marisol|paulina|elvira|helena|laura|lucia|lucía|paloma|isabela|sabina|google fran|google espa|alice|federica|paola|elsa|google ital|alva|klara|sofie/i;
+const FEMALE=/female|femme|mujer|amélie|amelie|audrey|aurélie|aurelie|marie|julie|denise|céline|celine|léa|virginie|monica|mónica|marisol|paulina|elvira|helena|laura|lucia|lucía|paloma|isabela|sabina|google fran|google espa|alice|federica|paola|elsa|google ital|joana|catarina|inês|ines|google portu|alva|klara|sofie/i;
 const MALE=/\bmale\b|thomas|nicolas|henri|daniel|jorge|juan|diego|pablo|carlos|alvaro|álvaro|eddy|grandpa|reed|rocko|luca|cosimo|oskar/i;
 function voiceFor(code){
   const pre=code.slice(0,2);
@@ -706,6 +781,31 @@ const AVATARS={
     front:`<g transform="translate(79 70) rotate(8)"><path d="M-8 -2 Q-8 12 0 12 Q8 12 8 -2Z" fill="#fff" opacity=".35"/><path d="M-7.2 3 Q-6.5 11 0 11 Q6.5 11 7.2 3Z" fill="url(#wine-johan)"/>
       <path d="M-8 -2 Q-8 12 0 12 Q8 12 8 -2 M0 12 v11 M-6 23 h12" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/></g>`})
 };
+
+/* Familjen Åkerberg/Widerberg: fem små huvuden mot Cascais-havet */
+const miniHead=(x,y,r,{hair,shirt,skin="#F6CFAE",style="short",lash=false})=>`<g transform="translate(${x} ${y}) scale(${r/10})">
+  ${style!=="short"?`<path d="M-12 0 Q-13 -13 0 -13 Q13 -13 12 0 L${style==="long"?13:11} ${style==="long"?15:8} L${style==="long"?-13:-11} ${style==="long"?15:8}Z" fill="${hair}"/>`:""}
+  ${style==="pigtails"?`<circle cx="-12.5" cy="1" r="4.6" fill="${hair}"/><circle cx="12.5" cy="1" r="4.6" fill="${hair}"/><circle cx="-10" cy="-3" r="1.6" fill="#FF3E8E"/><circle cx="10" cy="-3" r="1.6" fill="#FF3E8E"/>`:""}
+  <path d="M-14 28 Q-13 13 0 12.5 Q13 13 14 28Z" fill="${shirt}"/>
+  <circle r="10" fill="${skin}"/>
+  ${style==="short"?`<path d="M-10.3 -1 Q-11 -11.8 0 -11.8 Q11 -11.8 10.3 -1 Q8.5 -6.5 3.5 -7.2 Q-1 -4.6 -7.5 -6.4 Q-9.4 -4.2 -10.3 -1Z" fill="${hair}"/>`
+    :`<path d="M-10.4 2 Q-11.2 -11.8 0 -11.8 Q11.2 -11.8 10.4 2 Q9.4 -7 2.5 -8.2 Q-3.5 -5 -9 -5.4Z" fill="${hair}"/>`}
+  <ellipse cx="-3.6" cy="0.6" rx="1.35" ry="1.65" fill="${INK}"/><ellipse cx="3.6" cy="0.6" rx="1.35" ry="1.65" fill="${INK}"/>
+  <circle cx="-3.1" cy="0" r=".5" fill="#fff"/><circle cx="4.1" cy="0" r=".5" fill="#fff"/>
+  ${lash?`<path d="M-5 -.6 l-1.3 -1 M5 -.6 l1.3 -1" stroke="${INK}" stroke-width=".7" stroke-linecap="round"/>`:""}
+  <ellipse cx="-6.3" cy="3.8" rx="1.9" ry="1.1" fill="#FF7E9D" opacity=".5"/><ellipse cx="6.3" cy="3.8" rx="1.9" ry="1.1" fill="#FF7E9D" opacity=".5"/>
+  <path d="M-3 4.3 Q0 7.4 3 4.3" stroke="${INK}" stroke-width="1.05" fill="none" stroke-linecap="round"/></g>`;
+AVATARS.akerberg=`<svg viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="av-akerberg"><circle cx="50" cy="50" r="48"/></clipPath>
+  <linearGradient id="bg-akerberg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB86B"/><stop offset=".55" stop-color="#FF7A8A"/><stop offset=".56" stop-color="#2EC4E6"/><stop offset="1" stop-color="#1572C9"/></linearGradient></defs>
+  <g clip-path="url(#av-akerberg)"><circle cx="50" cy="50" r="48" fill="url(#bg-akerberg)"/>
+  <circle cx="50" cy="56" r="11" fill="#FFE27A" opacity=".9"/>
+  <path d="M8 60 q6 -3 12 0 M80 61 q6 -3 12 0" stroke="#BDF2FF" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  ${miniHead(33,36,13,{hair:"#6B4226",shirt:"#1E3A6E",style:"short"})}
+  ${miniHead(67,36,12.5,{hair:"#E2B866",shirt:"#E8456B",style:"long",lash:true})}
+  ${miniHead(22,66,11,{hair:"#4A2C1C",shirt:"#1FA55B",style:"short"})}
+  ${miniHead(50,70,10,{hair:"#D9A441",shirt:"#7C5CFF",style:"long",lash:true})}
+  ${miniHead(78,70,8.8,{hair:"#A8693E",shirt:"#FFB13D",style:"pigtails",lash:true})}
+  </g></svg>`;
 const avatar=k=>AVATARS[k]||"";
 
 function mascotSVG(){
@@ -730,7 +830,7 @@ function header(){
   const p=P(), L=LANG[S.lang];
   const left = p.kid
     ? `${mascotSVG()}<div class="grow"><div class="bubble" id="bubble">${esc(S.bubble||L.hello+" "+p.name)}</div></div>`
-    : `<div class="adult grow"><span class="pi">${avatar(S.p)}</span><div><b>${p.name}</b><small>${L.flag} ${L.name}</small></div></div>`;
+    : `<div class="adult grow"><span class="pi">${avatar(S.p)}</span><div><b>${p.short||p.name}</b><small>${L.flag} ${L.name}</small></div></div>`;
   return `<div class="top">${left}<button class="switch" data-a="who">Byt person</button></div>`;
 }
 function whoView(){
@@ -744,7 +844,7 @@ function home(){
   return `${header()}
   <h1 class="disp">${p.title}</h1>
   ${p.langs.length>1?`<div class="langs" role="group" aria-label="Välj språk">
-    ${p.langs.map(k=>`<button class="lang" data-a="lang" data-v="${k}" aria-pressed="${S.lang===k}"><span class="flag">${LANG[k].flag}</span>${LANG[k].name}</button>`).join("")}</div>`:""}
+    ${p.langs.map(k=>`<button class="lang" data-a="lang" data-v="${k}" aria-pressed="${S.lang===k}"><span class="flag">${LANG[k].flag}</span><span>${LANG[k].name}</span></button>`).join("")}</div>`:""}
   ${groups.map(g=>`${g?`<h3 class="group">${g}</h3>`:""}<div class="grid">
     ${cats.filter(c=>(c.group||"")===g).map(c=>`<button class="cat" data-a="cat" data-v="${c.id}">
       <span class="pic">${c.e}</span><span class="sv">${c.sv}</span><span class="fx">${esc(c.fx[S.lang])}</span>
@@ -842,7 +942,7 @@ function doneView(){
     </div>
   </div>`;
 }
-const APP_VERSION="2026-10-25 15:10";
+const APP_VERSION="2026-10-26 14:05";
 function resetAll(){
   if(!confirm("Börja om från början?\n\nAlla stjärnor, valt språk och vald person raderas för alla på den här enheten.")) return;
   try{Object.keys(localStorage).filter(k=>k.startsWith("sprakresa:")).forEach(k=>localStorage.removeItem(k))}catch(e){}
@@ -891,14 +991,14 @@ const REC = window.SpeechRecognition || window.webkitSpeechRecognition || null;
 let rec=null;
 let recToken=null;
 function stopRec(){recToken=null; try{rec&&rec.abort()}catch(e){} if(rec) recEndedAt=performance.now(); rec=null}
-const MIC_ART=/^(le|la|les|l|un|une|des|du|de|el|los|las|lo|unos|unas|al|del|il|gli|i|uno|una|un)$/;
+const MIC_ART=/^(le|la|les|l|un|une|des|du|de|el|los|las|lo|unos|unas|al|del|il|gli|i|uno|una|un|o|a|os|as|um|uma|uns|umas)$/;
 function norm(t){return t.toLowerCase().replace(/\s*\([^)]*\)/g,"").normalize("NFD").replace(/[\u0300-\u036f]/g,"")
   .replace(/[^a-z0-9ñ ]+/g," ").split(/\s+/).filter(w=>w&&!MIC_ART.test(w)).join(" ")}
 function lev(a,b){const m=a.length,n=b.length; if(!m||!n) return Math.max(m,n); let r=[...Array(n+1).keys()];
   for(let i=1;i<=m;i++){let prev=r[0]; r[0]=i; for(let j=1;j<=n;j++){const t=r[j]; r[j]=Math.min(r[j]+1,r[j-1]+1,prev+(a[i-1]===b[j-1]?0:1)); prev=t}} return r[n]}
 function micMatch(heard,target){const h=norm(heard), t=norm(target); if(!t) return false;
   if(h===t||(" "+h+" ").includes(" "+t+" ")) return true;
-  const tol=P()?.kid?0.4:0.3;
+  const tol=(P()?.kid||P()?.lenient)?0.4:0.3;
   if(lev(h,t)<=Math.max(1,Math.round(t.length*tol))) return true;
   // hela meningen inbäddad: titta på lika långa ordfönster
   const hw=h.split(" "), n=t.split(" ").length;
